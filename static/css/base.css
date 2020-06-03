@@ -1,0 +1,19 @@
+body{
+    background: #F3F3F3;
+}
+
+.navbar-brand{
+    padding: 0 5px;
+    padding-right: 10px;
+}
+
+.logo{
+    height: 50px;
+}
+
+.body-container{
+    width: 600px;
+    background: white;
+    margin: 0 auto;
+    border-radius: 5px;
+}

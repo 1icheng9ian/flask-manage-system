@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block page_name %}
+验证账号
+{% endblock %}
+{% block body_part %}
+<div style="width: 100%; text-align: center;">
+    <form action="/" method="POST">
+        <p>App Key: <input type="text" name="appKey"></p>
+        <p>App Secret: <input type="password" name="appSecret"></p>
+        <button type="submit">提交</button>
+    </form>
+</div>
+{% endblock %}
