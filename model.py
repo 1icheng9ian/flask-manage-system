@@ -24,7 +24,7 @@ def saveaccout(appKey:str, appSecret:str):
     else:
         pass
 
-def SaveManyData(clname:str, data:dict):
+def AddOneData(clname:str, data:dict):
     '''
     连接 mongodb
     数据库名和collection名
@@ -32,5 +32,5 @@ def SaveManyData(clname:str, data:dict):
     connect = MongoClient(host, port)
     db = connect[dbname]
     collection = db[clname]
-    collection.insert_many(data)
+    collection.insert_one(data)
 
