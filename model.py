@@ -62,7 +62,7 @@ def UpdateAllDevice(appKey:str, appSecret:str):
         r = json.loads(result.decode('UTF-8'))
         rr = r['result']['list']
         coll_device = Connect('device')
-        # 避免重复
+        # 避免重复写入数据库
         for j in range(len(rr)):
             count = coll_device.count_documents({"deviceId": rr[j]["deviceId"]})
             if count == 0:
@@ -70,15 +70,22 @@ def UpdateAllDevice(appKey:str, appSecret:str):
             else:
                 pass
 
-def QueryProduct(keywords:str):
+def QueryProduct(productId:int, keywords:str):
     '''
     查询指定产品
-    将从 productId 和 productName 中查询
+    支持产品id和产品名关键词查询
     '''
     coll_product = Connect('product')
-    # 组合逻辑 OR
-    result = coll_product.find_one({'productId': keywords})
-    return result
+    r = list(coll_product.find({'$or': [{'productId': productId}, {'productName': {'$regex': keywords}}]}))
+    if r == []:
+        return "无结果"
+    else:
+        return r
+
+    
+
+
+
 
 
 
