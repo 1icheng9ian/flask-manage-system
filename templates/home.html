@@ -3,20 +3,11 @@
 后台管理系统
 {% endblock %}
 {% block body_part %}
-<!--左侧边栏-->
-<div class="row-fluie">
-    <div class="col-sm-3 col-md-2 sidebar">     
-        <ul class="nav nav-sidebar">
-            <!--一级菜单-->
-            <li class="product"><a href="#productMeun" class="nav-header menu-first collapsed" data-toggle="collapse">产品分类<span class="sr-only">(current)</span></a></li>
-            <!--二级菜单-->
-            <ul id="productMeun" class="nav nav-list collapse menu-second">
-                <li><a href="#" onclick="showAtRight('/product/add')">添加新产品</a></li>
-                <li><a href="#" onclick="showAtRight('/device/add')">添加新设备</a></li>
-            </ul>
-        </ul>
+<div class="jumbotron">
+    <div class="container">
+        <h1>物联网管理系统</h1>
+        <p>我们提供完善的服务</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">了解更多</a></p>
     </div>
 </div>
-<!--右侧展示区-->
-
 {% endblock %}
