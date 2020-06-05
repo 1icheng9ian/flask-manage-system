@@ -1,7 +1,7 @@
 # IoT Manage System
 ## 一、框架
 ### 前端  
-+ Bootstrap  
++ Bootstrap V4  
 ### 后端
 + Flask  
 ### 数据库  

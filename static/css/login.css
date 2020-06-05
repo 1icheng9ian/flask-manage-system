@@ -11,3 +11,10 @@ h3{
 form.form > div{
     padding: 8px;
 }
+
+.body-container{
+    width: 600px;
+    background: white;
+    margin: 0 auto;
+    border-radius: 5px;
+}
