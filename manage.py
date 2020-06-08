@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect ,url_for, session
 from exts import CheckAccess
 from model import saveaccout
 from config import config
+import json
 
 app = Flask(__name__)
 # 导入配置
@@ -16,6 +17,15 @@ def home():
 @app.route('/product/')
 def product():
     return render_template('/product/product.html')
+
+
+@app.route('/query/', methods=['GET', 'POST'])
+def query():
+    row = [{'字段一':'value1','字段二':'value2'},{'字段一':'value3','字段二':'value4'}]
+    result = json.dumps(row)
+    return result
+    
+
 
 # 登录页
 @app.route('/access/', methods=['GET', 'POST'])
