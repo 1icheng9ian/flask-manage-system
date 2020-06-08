@@ -25,7 +25,8 @@ def CheckAccess(appKey:str, appSecret:str):
 
 def StateListener(appKey:str, appSecret:str, productId:int, deviceId:str, stateName:str):
     '''
-    状态监听器
+    设备单状态监听器
+    如电池量，烟雾浓度等
     '''
     body = dumps({'productId':productId, 'deviceId':deviceId, 'datasetId':stateName})
     result = aep_device_status.QueryDeviceStatus(appKey, appSecret, body)

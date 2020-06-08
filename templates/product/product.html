@@ -1,7 +1,4 @@
 {% extends 'base.html' %}
-{% block static_files %}
-<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
-{% endblock %}
 {% block page_name %}
 后台管理系统
 {% endblock %}
@@ -12,49 +9,48 @@
             <div class="sidebar-sticky pt-3">
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a class="nav-link active" href="#">产品列表 <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="{{ url_for('product') }}">产品列表<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">设备列表</a>
+                  <a class="nav-link" href="{{ url_for('device') }}">设备列表</a>
                 </li>
               </ul>
             </div>
         </nav>
-
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h4>产品中心</h4>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary">刷新</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">更新</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary">添加</button>
               </div>
             </div>
           </div>
           <!-- 表格 -->
-          <div class="col-md-12">
-            <table id="table" ></table>
+          <div class="page-header">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>产品名</th>
+                  <th>产品id</th>
+                  <th>产品类别</th>
+                  <th>创建时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in products %}
+                <tr>
+                  <td>{{ product.productName}}</td>
+                  <td>{{ product.productId }}</td>
+                  <td>{{ product.thirdTypeValue }}</td>
+                  <td>{{ product.createTime }}</td>
+                </tr> 
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-
         </main>
     </div>
 </div>
-{% endblock %}
-{% block script_part %}
-<script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
-
-<!-- 填充数据script -->
-<script>
-  var abc = $('#table');
-    abc.bootstrapTable({
-    method: 'POST',
-    url:"{{ url_for('query') }}",
-    columns: [
-        { field: '字段一',
-        title: '标题一'},
-        { field: '字段二',
-        title: '标题二'},]
-    });
-</script>
 {% endblock %}

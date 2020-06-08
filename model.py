@@ -82,6 +82,23 @@ def QueryProduct(productId:int, keywords:str):
     else:
         return r
 
+def ProductList():
+    '''
+    产品列表
+    '''
+    coll_product = Connect('product')
+    r = coll_product.find({},{'_id': 0, 'productId': 1, 'productName': 1, 'createTime': 1, 'thirdTypeValue': 1})
+    return r
+
+def DeviceList():
+    '''
+    设备列表
+    '''
+    coll_device = Connect('device')
+    r = coll_device.find({},{'_id': 0, 'deviceName': 1, 'productId': 1, 'imei': 1, 'createTime': 1, 'onlineAt': 1, 'offlineAt': 1})
+    return r
+
+    
     
 
 
