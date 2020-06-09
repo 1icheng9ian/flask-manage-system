@@ -19,12 +19,14 @@
         </nav>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h4>产品中心</h4>
-            <div class="btn-toolbar mb-2 mb-md-0">
-              <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary">更新</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">添加</button>
-              </div>
+            <h5>产品中心</h5>
+            <form class="form-inline mr-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search">
+              <button class="btn btn-outline-secondary btn-sm" type="submit">搜索</button>
+            </form>
+            <div>
+              <button type="button" class="btn btn-sm btn-outline-success">更新</button>
+              <button type="button" class="btn btn-sm btn-outline-info">添加</button>
             </div>
           </div>
           <!-- 表格 -->
@@ -36,6 +38,7 @@
                   <th>产品id</th>
                   <th>产品类别</th>
                   <th>创建时间</th>
+                  <th>操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -45,6 +48,10 @@
                   <td>{{ product.productId }}</td>
                   <td>{{ product.thirdTypeValue }}</td>
                   <td>{{ product.createTime }}</td>
+                  <td><div>
+                    <button type="button" class="btn btn-primary btn-sm">查看</button>
+                    <button type="button" class="btn btn-danger btn-sm">删除</button>
+                  </div></td>
                 </tr> 
                 {% endfor %}
               </tbody>

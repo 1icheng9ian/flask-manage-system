@@ -35,7 +35,6 @@ def StateListener(appKey:str, appSecret:str, productId:int, deviceId:str, stateN
     timeStamp = r['deviceStatus']['timestamp']
     localTime = localtime(timeStamp / 1000)
     dataTime = strftime('%Y/%m/%d %H:%M:%S', localTime)
-    return dataTime, value
-
+    return dumps({dataTime: value})
 
 

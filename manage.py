@@ -18,6 +18,7 @@ def product():
     products = ProductList()
     return render_template('/product/product.html', products=products)
 
+# 设备页
 @app.route('/device/')
 def device():
     devices = DeviceList()
@@ -40,6 +41,7 @@ def access():
             return redirect(url_for('product'))
         else:
             return render_template('access.html')
+
 
 # 保持登录状态
 @app.context_processor
