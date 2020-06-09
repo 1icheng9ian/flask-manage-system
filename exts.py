@@ -9,7 +9,7 @@ from time import localtime, strftime
 
 def CheckAccess(appKey:str, appSecret:str):
     '''
-    验证账号是否有效
+    登录
     '''
     try:
         aep_product_management.QueryProductList(appKey, appSecret, '', 1, 40)

@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash #加密
 from apis import aep_device_management
 from apis import aep_product_management
+from time import localtime, strftime
 import json
 host = '127.0.0.1'
 port = 27017
@@ -32,24 +33,35 @@ def saveaccout(appKey:str, appSecret:str):
     else:
         pass
 
+def itemCount(item:str):
+    collection = Connect(item)
+    num = collection.find().count()
+    return num
+
 def UpdateAllProduct(appKey:str, appSecret:str):
     '''
     更新所有产品
+    并返回产品数量
     '''
     coll_product = Connect('product')
     result = aep_product_management.QueryProductList(appKey, appSecret, '', 1, 40)
     r = json.loads(result.decode('UTF-8'))
     rr = r['result']['list']
     for i in range(len(rr)):
+        rr[i]['createTime'] = strftime('%Y/%m/%d %H:%M:%S', localtime(rr[i]['createTime'] / 1000))
+        rr[i]['updateTime'] = strftime('%Y/%m/%d %H:%M:%S', localtime(rr[i]['updateTime'] / 1000))
         count = coll_product.count_documents({"productId": rr[i]["productId"]})
         if count == 0:
             coll_product.insert_one(rr[i])
         else:
             pass
+    num = itemCount('product')
+    return num
 
 def UpdateAllDevice(appKey:str, appSecret:str):
     '''
     更新数据库中所有产品下的设备
+    并返回设备数量
     '''
     coll_product = Connect('product')
     productId = []
@@ -64,11 +76,16 @@ def UpdateAllDevice(appKey:str, appSecret:str):
         coll_device = Connect('device')
         # 避免重复写入数据库
         for j in range(len(rr)):
+            rr[j]['createTime'] = strftime('%Y/%m/%d %H:%M:%S', localtime(rr[j]['createTime'] / 1000))
+            rr[j]['onlineAt'] = strftime('%Y/%m/%d %H:%M:%S', localtime(rr[j]['onlineAt'] / 1000))
+            rr[j]['offlineAt'] = strftime('%Y/%m/%d %H:%M:%S', localtime(rr[j]['offlineAt'] / 1000))
             count = coll_device.count_documents({"deviceId": rr[j]["deviceId"]})
             if count == 0:
                 coll_device.insert_one(rr[j])
             else:
                 pass
+    num = itemCount('device')
+    return num
 
 def QueryProduct(productId:int, keywords:str):
     '''
@@ -87,7 +104,7 @@ def ProductList():
     产品列表
     '''
     coll_product = Connect('product')
-    r = coll_product.find({},{'_id': 0, 'productId': 1, 'productName': 1, 'createTime': 1, 'thirdTypeValue': 1})
+    r = coll_product.find({},{'_id': 0, 'productId': 1, 'productName': 1, 'createTime': 1, 'deviceCount': 1, 'thirdTypeValue': 1})
     return r
 
 def DeviceList():
@@ -95,7 +112,7 @@ def DeviceList():
     设备列表
     '''
     coll_device = Connect('device')
-    r = coll_device.find({},{'_id': 0, 'deviceName': 1, 'productId': 1, 'imei': 1, 'createTime': 1, 'onlineAt': 1, 'offlineAt': 1})
+    r = coll_device.find({},{'_id': 0, 'deviceName': 1, 'deviceId':1, 'productId': 1, 'createTime': 1, 'onlineAt': 1, 'offlineAt': 1})
     return r
 
     

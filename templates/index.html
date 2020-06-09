@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block your_css %}
+<link rel="stylesheet" href="/static/layui/css/index.css">
+{% endblock %}
+{% block body_part %}
+<div class="layui-carousel" id="picture">
+  <div carousel-item>
+    <div><p class="layui-bg-green demo-carousel">物联网管理系统</p></div>
+    <div><p class="layui-bg-blue demo-carousel">中国电信物联网平台</p></div>
+    <div><p class="layui-bg-cyan demo-carousel">管理你的设备</p></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block your_script %}
+<script>
+  layui.use('carousel', function(){
+    var carousel = layui.carousel;
+    carousel.render({
+      elem: '#picture'
+      ,width: '100%'
+      ,arrow: 'always'
+    });
+  });
+  </script>
+{% endblock %}
