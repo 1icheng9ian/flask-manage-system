@@ -1,13 +1,45 @@
 {% extends 'base.html' %}
-{% block page_name %}
-后台管理系统
-{% endblock %}
 {% block body_part %}
-<div class="jumbotron">
-    <h1 class="display-4">欢迎使用物联网管理系统</h1>
-    <p class="lead">这是一个物联网管理系统</p>
-    <hr class="my-4">
-    <p>你可以在这里管理你的后台。</p>
-    <a class="btn btn-primary btn-lg" href="#" role="button">了解更多</a>
+<div class="layui-side layui-bg-black">
+  <!-- 左侧导航 -->
+  <div class="layui-side-scroll">
+    <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+      <li class="layui-nav-item"><a href="{{ url_for('home') }}">主页</a></li>
+      <li class="layui-nav-item"><a href="{{ url_for('product') }}">产品分类</a></li>
+      <li class="layui-nav-item"><a href="{{ url_for('device') }}">设备列表</a></li>
+      <li class="layui-nav-item"><a href="{{ url_for('alarm') }}">警报信息</a></li>
+    </ul>
   </div>
+</div>
+<!-- 主体内容 -->
+<div class="layui-body">
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-sm6 layui-col-md4">
+        <div class="layui-card">
+          <div class="layui-card-header">产品数量</div>
+        </div>
+        <div class="layui-card-body">
+          <p>233</p>
+        </div>
+      </div>
+      <div class="layui-col-sm6 layui-col-md4">
+        <div class="layui-card">
+          <div class="layui-card-header">设备总数</div>
+        </div>
+        <div class="layui-card-body">
+          <p>233</p>
+        </div>
+      </div>
+      <div class="layui-col-sm6 layui-col-md4">
+        <div class="layui-card">
+          <div class="layui-card-header">在线设备数</div>
+        </div>
+        <div class="layui-card-body">
+          <p>233</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

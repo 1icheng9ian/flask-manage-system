@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body_part %}
+<div class="layui-carousel" id="picture">
+  <div carousel-item>
+    <div>条目1</div>
+    <div>条目2</div>
+    <div>条目3</div>
+    <div>条目4</div>
+    <div>条目5</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block your_script %}
+<script>
+  layui.use('carousel', function(){
+    var carousel = layui.carousel;
+    carousel.render({
+      elem: '#picture'
+      ,width: '100%'
+      ,arrow: 'always'
+    });
+  });
+  </script>
+{% endblock %}
