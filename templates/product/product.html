@@ -25,7 +25,6 @@
               <button class="btn btn-outline-secondary btn-sm" type="submit">搜索</button>
             </form>
             <div>
-              <button type="button" class="btn btn-sm btn-outline-success">更新</button>
               <button type="button" class="btn btn-sm btn-outline-info">添加</button>
             </div>
           </div>
@@ -38,6 +37,7 @@
                   <th>产品id</th>
                   <th>产品类别</th>
                   <th>创建时间</th>
+                  <th>设备数量</th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -48,6 +48,7 @@
                   <td>{{ product.productId }}</td>
                   <td>{{ product.thirdTypeValue }}</td>
                   <td>{{ product.createTime }}</td>
+                  <td>{{ product.deviceCount}}</td>
                   <td><div>
                     <button type="button" class="btn btn-primary btn-sm">查看</button>
                     <button type="button" class="btn btn-danger btn-sm">删除</button>
@@ -60,4 +61,6 @@
         </main>
     </div>
 </div>
+{% endblock %}
+{% block script_part %}
 {% endblock %}

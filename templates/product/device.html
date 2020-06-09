@@ -25,7 +25,6 @@
               <button class="btn btn-outline-secondary btn-sm" type="submit">搜索</button>
             </form>
             <div>
-              <button type="button" class="btn btn-sm btn-outline-success">更新</button>
               <button type="button" class="btn btn-sm btn-outline-info">添加</button>
             </div>
           </div>
@@ -35,8 +34,7 @@
               <thead>
                 <tr>
                   <th>设备名</th>
-                  <th>所属产品id</th>
-                  <th>imei号</th>
+                  <th>所属产品</th>
                   <th>创建时间</th>
                   <th>最后上线时间</th>
                   <th>最后离线时间</th>
@@ -48,7 +46,6 @@
                 <tr>
                   <td>{{ device.deviceName }}</td>
                   <td>{{ device.productId }}</td>
-                  <td>{{ device.imei }}</td>
                   <td>{{ device.createTime }}</td>
                   <td>{{ device.onlineAt }}</td>
                   <td>{{ device.offlineAt }}</td>

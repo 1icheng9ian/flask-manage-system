@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect ,url_for, session
 from exts import CheckAccess
-from model import saveaccout, ProductList, DeviceList
+from model import saveaccout, ProductList, DeviceList, UpdateAllDevice, UpdateAllProduct
 from config import config
 
 app = Flask(__name__)
@@ -15,12 +15,14 @@ def home():
 # 产品页
 @app.route('/product/')
 def product():
+    UpdateAllProduct(session.get('appKey'), session.get('appSecret'))
     products = ProductList()
     return render_template('/product/product.html', products=products)
 
 # 设备页
 @app.route('/device/')
 def device():
+    UpdateAllDevice(session.get('appKey'), session.get('appSecret'))
     devices = DeviceList()
     return render_template('/product/device.html', devices=devices)
 
@@ -37,6 +39,7 @@ def access():
         saveaccout(appKey, appSecret)
         if '成功' in message:
             session['appKey'] = appKey
+            session['appSecret'] = appSecret
             session.permanent = True
             return redirect(url_for('product'))
         else:
@@ -56,6 +59,8 @@ def my_context_processor():
 def logout():
     session.clear()
     return redirect(url_for('home'))
+
+
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8000)
