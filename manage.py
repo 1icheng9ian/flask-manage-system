@@ -64,7 +64,7 @@ def my_context_processor():
 def logout():
     session.clear()
     return redirect(url_for('index'))
-
+    
 # 刷新数字
 @app.context_processor
 def refreshproduct():
