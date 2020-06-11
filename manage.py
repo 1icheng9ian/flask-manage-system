@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request, redirect ,url_for, session
+<<<<<<< HEAD
 from exts import CheckAccess, StateListener
+=======
+from exts import CheckAccess
+>>>>>>> 7b23d69d27b8cc510c5cd0d7d882da8f101f4455
 from model import saveaccout, ProductList, DeviceList, UpdateAllDevice, UpdateAllProduct
 from config import config
 
@@ -64,6 +68,8 @@ def my_context_processor():
 def logout():
     session.clear()
     return redirect(url_for('index'))
+
+
 
 
 
