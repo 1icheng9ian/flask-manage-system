@@ -23,6 +23,7 @@ def CheckAccess(appKey:str, appSecret:str):
     else:
         return('登录成功')
 
+
 def StateListener(appKey:str, appSecret:str, productId:int, deviceId:str, stateName:str):
     '''
     设备单状态监听器

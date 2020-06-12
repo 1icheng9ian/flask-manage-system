@@ -13,7 +13,7 @@ def index():
     return render_template('index.html')
 
 # 主页
-@app.route('/home')
+@app.route('/home/')
 def home():
     return render_template('home.html')
 
@@ -27,7 +27,7 @@ def product():
 def device():
     return render_template('/product/device.html')
 
-# 警报信息
+# 警报信息页
 @app.route('/alarm/')
 def alarm():
     return render_template('/product/alarm.html')
@@ -46,7 +46,7 @@ def login():
             session['appKey'] = appKey
             session['appSecret'] = appSecret
             session.permanent = True
-            return redirect(url_for('product'))
+            return redirect(url_for('home'))
         else:
             return render_template('login.html')
 
@@ -64,7 +64,7 @@ def my_context_processor():
 def logout():
     session.clear()
     return redirect(url_for('index'))
-
+    
 # 刷新数字
 @app.context_processor
 def refreshproduct():
