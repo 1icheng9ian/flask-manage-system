@@ -14,6 +14,15 @@
 <!-- 主体内容 -->
 <div class="layui-body">
   <div class="layui-fluid" style="padding: 20px;">
+    <div id="layerDemo">
+      <blockquote class="layui-elem-quote">
+        操作
+      </blockquote>
+      <a href="{{ url_for('update') }}" data-method="offset" data-type="auto" class="layui-btn layui-btn-normal">更新</a>
+    </div>
+    <blockquote class="layui-elem-quote" style="margin-top: 30px;">
+      总数
+    </blockquote>
     <div class="layui-row layui-col-space15">
       <div class="layui-col-sm6 layui-col-md6">
         <div class="layui-card">
@@ -34,4 +43,31 @@
     </div>
   </div>
 </div>
+{% endblock %}
+{% block your_script %}
+<script>
+  layui.use('layer', function(){ //独立版的layer无需执行这一句
+    var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+    
+    //绑定按钮，触发事件
+    var active = {
+      offset: function(othis){ //offset 与 button 中 data-method 中的值对应
+        var type = othis.data('type')
+        ,text = othis.text();
+        
+        layer.open({
+          title: '提示'
+          ,content: '已更新全部产品和设备信息'
+          ,btnAlign: 'c' //按钮居中
+        }); 
+      }
+    };
+    
+    $('#layerDemo .layui-btn').on('click', function(){
+      var othis = $(this), method = othis.data('method');
+      active[method] ? active[method].call(this, othis) : '';
+    });
+    
+  });
+  </script>
 {% endblock %}
