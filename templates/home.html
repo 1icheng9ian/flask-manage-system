@@ -6,7 +6,6 @@
     <ul class="layui-nav layui-nav-tree"  lay-filter="test">
       <li class="layui-nav-item"><a href="{{ url_for('home') }}">主页</a></li>
       <li class="layui-nav-item"><a href="{{ url_for('product') }}">产品分类</a></li>
-      <li class="layui-nav-item"><a href="{{ url_for('device') }}">设备列表</a></li>
       <li class="layui-nav-item"><a href="{{ url_for('alarm') }}">警报信息</a></li>
     </ul>
   </div>
@@ -14,6 +13,15 @@
 <!-- 主体内容 -->
 <div class="layui-body">
   <div class="layui-fluid" style="padding: 20px;">
+    <div id="layerDemo">
+      <blockquote class="layui-elem-quote">
+        操作
+      </blockquote>
+      <a href="{{ url_for('update') }}" data-method="offset" data-type="auto" class="layui-btn layui-btn-normal">更新</a>
+    </div>
+    <blockquote class="layui-elem-quote" style="margin-top: 30px;">
+      总数
+    </blockquote>
     <div class="layui-row layui-col-space15">
       <div class="layui-col-sm6 layui-col-md6">
         <div class="layui-card">

@@ -6,33 +6,31 @@
     <ul class="layui-nav layui-nav-tree"  lay-filter="test">
       <li class="layui-nav-item"><a href="{{ url_for('home') }}">主页</a></li>
       <li class="layui-nav-item"><a href="{{ url_for('product') }}">产品分类</a></li>
-      <li class="layui-nav-item"><a href="{{ url_for('device') }}">设备列表</a></li>
       <li class="layui-nav-item"><a href="{{ url_for('alarm') }}">警报信息</a></li>
     </ul>
   </div>
 </div>
 <!-- 时间线显示警报信息 -->
 <div class="layui-body">
-    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px">
+  <div class="layui-fluid" style="padding: 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
       <legend>警报信息</legend>
     </fieldset>
     <ul class="layui-timeline">
+      {% for event in events %}
       <li class="layui-timeline-item">
-        <div class="layui-timeline-content layui-text">
-          <h3 class="layui-timeline-title">6月11日</h3>
-          <p>设备型号：
-            <br>报警代码：
-          </p>
-        </div>
+          <i class="layui-icon layui-icon-fire"></i>
+          <div class="layui-timeline-content layui-text">
+              <h3 class="layui-timeline-title">警报设备：{{ event.imei }}</h3>
+              <p>
+                  上报时间：{{ event.createTime }}
+                  <br>上报内容：{{ event.eventContent }}
+              </p>
+          </div>
       </li>
-      <li class="layui-timeline-item">
-        <div class="layui-timeline-content layui-text">
-          <h3 class="layui-timeline-title">6月7日</h3>
-          <p>设备型号：
-            <br>报警代码：
-          </p>
-        </div>
-      </li>
+      {% endfor %}
     </ul>
+  </div>
 </div>
 {% endblock %}
+

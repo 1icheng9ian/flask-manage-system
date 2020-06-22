@@ -8,6 +8,6 @@ class BaseConfig:
     DEBUG       = True # 调试
     SECRET_KEY  = 'this is a secret key!'   # session
 
-config = {
+Config = {
     'base': BaseConfig
 }

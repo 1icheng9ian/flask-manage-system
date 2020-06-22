@@ -6,65 +6,38 @@
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
         <li class="layui-nav-item"><a href="{{ url_for('home') }}">主页</a></li>
         <li class="layui-nav-item"><a href="{{ url_for('product') }}">产品分类</a></li>
-        <li class="layui-nav-item"><a href="{{ url_for('device') }}">设备列表</a></li>
         <li class="layui-nav-item"><a href="{{ url_for('alarm') }}">警报信息</a></li>
       </ul>
     </div>
-  </div>
-  <!-- 表格显示 -->
-  <!-- 含有数据操作 -->
-  <div class="layui-body">
-    <div class="layui-fluid">
-      <div class="layui-row layui-col-space15">
-        <div class="layui-col-md12">
-          <div class="layui-card">
-            <div class="layui-card-body">
-              <table class="layui-hide" id="table-device" lay-filter="table-device"></table>
-            </div>
-          </div>
-        </div>
-      </div>
+</div>
+<!-- 表格显示 -->
+<!-- 含有数据操作 -->
+<div class="layui-body">
+  <div class="layui-fluid" style="padding: 15px;">
+    <div class="layui-btn-group">
+      <a type="button" class="layui-btn layui-btn-normal layui-btn-sm" href="{{ url_for('newdevice') }}">添加</a>
+      <a type="button" class="layui-btn layui-btn-normal layui-btn-sm" href="{{ url_for('product' )}}">返回</a>
+    </div>
+    <div>
+      <table class="layui-table" lay-skin="row">
+        <thead>
+            <th>deviceName</th>
+            <th>productId</th>
+            <th>imei</th>
+            <th>createTime</th>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <td>{{ device.deviceName }}</td>
+                <td>{{ device.productId }}</td>
+                <td>{{ device.imei }}</td>
+                <td>{{ device.createTime }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     </div>
   </div>
-  <script type="text/html" id="operate-bar">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-  </script>
-{% endblock %}
-
-{% block your_script %}
-<script>
-  layui.use('table', function(){
-    var table = layui.table;
-    
-    //表格实例
-    table.render({
-      elem: '#table-device'
-      ,url: '/query_device' //数据接口
-      ,cellMinWidth: 180
-      ,cols: [[ //表头
-        {field: 'deviceName', title: '设备名', align: 'center'}
-        ,{field: 'deviceId', title: '设备ID', align: 'center'}
-        ,{field: 'productId', title: '产品ID', align: 'center'}
-        ,{field: 'createTime', title: '创建时间', align: 'center'} 
-        ,{field: 'onlineAt', title: '上线时间', align: 'center'}
-        ,{field: 'offlineAt', title: '下线时间', align: 'center'}
-        ,{align: 'center', toolbar: '#operate-bar', title: '操作', align: 'center'}
-      ]]
-    });
-
-    //监听工具条
-    table.on('tool(table-device)', function(obj){
-      var data = obj.data;
-      if(obj.event == 'detail'){
-        layer.msg('查看ID为'+data.deviceId+'的信息');
-      } else if(obj.event == 'del'){
-        layer.confirm('确定删除吗？',function(index){
-          obj.del();
-          layer.close(index);
-        });
-      }
-    });
-  });
-  </script>
+</div>
 {% endblock %}
