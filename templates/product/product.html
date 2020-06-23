@@ -1,23 +1,18 @@
 {% extends 'base.html' %}
 {% block body_part %}
-<div class="layui-side layui-bg-black">
-  <!-- 左侧导航 -->
-  <div class="layui-side-scroll">
-    <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-      <li class="layui-nav-item"><a href="{{ url_for('home') }}">主页</a></li>
-      <li class="layui-nav-item"><a href="{{ url_for('product') }}">产品分类</a></li>
-      <li class="layui-nav-item"><a href="{{ url_for('alarm') }}">警报信息</a></li>
-    </ul>
-  </div>
-</div>
 <!-- 表格显示 -->
 <!-- 含有数据操作 -->
 <div class="layui-body">
-  <div class="layui-fluid" style="padding: 15px;">
-    <div class="layui-btn-group">
-      <a type="button" class="layui-btn layui-btn-normal layui-btn-sm">添加</a>
+  <div class="layui-card" style="padding-top: 10px;">
+    <div class="layui-card-header">
+      <div>
+        
+      </div>
+      <div class="layui-btn-group">
+        <a type="button" class="layui-btn layui-btn-normal">添加</a>
+      </div>
     </div>
-    <div>
+    <div class="layui-card-body">
       <table class="layui-table" lay-skin="row">
         <thead>
           <th>productId</th>

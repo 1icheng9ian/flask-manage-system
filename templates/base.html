@@ -12,7 +12,9 @@
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
         <div class="layui-header">
-            <div class="layui-logo">后台管理系统</div>
+            <div class="layui-logo">
+                <span>后台管理系统</span>
+            </div>
             <!-- 头部导航 -->
             <ul class="layui-nav layui-layout-left">
                 <li class="layui-nav-item"><a href="{{ url_for('index') }}">首页</a></li>
@@ -27,6 +29,16 @@
                 <li class="layui-nav-item"><a href=""></a></li>
                 {% endif %}
             </ul>
+        </div>
+        <div class="layui-side layui-bg-black">
+            <!-- 左侧导航 -->
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree"  lay-filter="lay-side-menu">
+                    <li class="layui-nav-item"><a href="{{ url_for('home') }}"><i class="layui-icon layui-icon-home"> 主页</i></a></li>
+                    <li class="layui-nav-item"><a href="{{ url_for('product') }}"><i class="layui-icon layui-icon-component"> 产品</i></a></li>
+                    <li class="layui-nav-item"><a href="{{ url_for('alarm') }}"><i class="layui-icon layui-icon-tips"> 警报</i></a></li>
+                </ul>
+            </div>
         </div>
     {% block body_part %}
     {% endblock %}

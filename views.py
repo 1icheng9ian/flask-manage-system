@@ -17,8 +17,6 @@ from models import UpdateEvent
 from time import strftime, localtime
 
 
-
-
 app = Flask(__name__)
 app.config.from_object(Config['base'])
 
@@ -95,7 +93,7 @@ def newdevice():
 def alarm():
     appKey = session.get('appKey')
     appSecret = session.get('appSecret')
-    UpdateEvent(appKey, appSecret)
+    # UpdateEvent(appKey, appSecret)
     coll_event = Connect('event')
     data = list(coll_event.find({'eventContent': {'$regex': '"smoke_state":1'}}, {'_id': 0, 'imei': 1, 'eventContent': 1, 'createTime': 1}))
     if not data:

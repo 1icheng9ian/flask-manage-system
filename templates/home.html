@@ -1,15 +1,5 @@
 {% extends 'base.html' %}
 {% block body_part %}
-<div class="layui-side layui-bg-black">
-  <!-- 左侧导航 -->
-  <div class="layui-side-scroll">
-    <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-      <li class="layui-nav-item"><a href="{{ url_for('home') }}">主页</a></li>
-      <li class="layui-nav-item"><a href="{{ url_for('product') }}">产品分类</a></li>
-      <li class="layui-nav-item"><a href="{{ url_for('alarm') }}">警报信息</a></li>
-    </ul>
-  </div>
-</div>
 <!-- 主体内容 -->
 <div class="layui-body">
   <div class="layui-fluid" style="padding: 20px;">
