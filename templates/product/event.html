@@ -1,34 +1,7 @@
 {% extends 'base.html' %}
 {% block body_part %}
-<div class="layui-body">
-    <div class="layui-fluid" style="padding: 20px;">
-        <div class="layui-col-md6">
-            <div class="layui-btn-group">
-                <a type="button" class="layui-btn layui-btn-primary" href="{{ url_for('device') }}">返回</a>
-                <a type="button" class="layui-btn layui-btn-primary" href="{{ url_for('update_event') }}">刷新</a>
-            </div>
-            <div>
-                <table class="layui-hide" id="table-event" lay-filter="table-event"></table>
-            </div>
-        </div>
-    </div>
-</div>
+
 {% endblock %}
 {% block your_script %}
-<script>
-    layui.use(['table'], function(){
-        var $ = layui.$
-        ,table = layui.table;
 
-        table.render({
-            elem: '#table-event'
-            ,url: '/query_event' //数据接口
-            ,cols: [[
-                {field: 'eventContent', title: '内容', align: 'center'}
-                ,{field: 'createTime', title: '时间', align: 'center'}
-            ]]
-        });
-
-    });
-</script>
 {% endblock %}
