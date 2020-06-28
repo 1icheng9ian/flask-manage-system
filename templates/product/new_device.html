@@ -1,41 +1,45 @@
 {% extends 'base.html' %}
 {% block body_part %}
 <div class="layui-body">
-    <div class="layui-fluid" style="padding: 15px;">
-        <form class="layui-form layui-form-pane" method="POST" style="padding: 15px;">
-            <div class="layui-form-item">
-              <label class="layui-form-label">设备名称</label>
-              <div class="layui-input-block">
-                <input type="text" name="name" required  lay-verify="required" autocomplete="off" class="layui-input">
-              </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">imei号</label>
-                <div class="layui-input-block">
-                  <input type="text" name="imei" required  lay-verify="required" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">创建者</label>
-                <div class="layui-input-block">
-                  <input type="text" name="operator" autocomplete="off" placeholder="选填" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">是否订阅</label>
-                <div class="layui-input-block">
-                  <input type="radio" name="autosub" value="0" title="是" checked="">
-                  <input type="radio" name="autosub" value="1" title="否">
-                </div>
-            </div>
-            <div class="layui-form-item">
-              <div class="layui-input-block">
-                <button class="layui-btn" lay-submit>创建</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-              </div>
-            </div>
-        </form>
-      </div>
+  <div class="layui-card" style="padding: 10px;">
+    <div class="layui-card-header">
+      <button class="layui-btn layui-btn-sm"><a href="#" onclick="javascript:history.back(-1);"><i class="layui-icon layui-icon-left" style="color: white;"></i></a></button>
     </div>
+    <div class="layui-card-body">
+      <form class="layui-form" method="POST">
+        <div class="layui-form-item">
+          <label class="layui-input-label">DeviceName</label>
+          <input type="text" name="devicename" required placeholder="请输入设备名称" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-input-label">imei</label>
+          <input type="text" name="imei" required placeholder="请输入15位imei" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-input-label">Operator</label>
+          <input type="text" name="operator" required placeholder="请输入创建者" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-input-label">Subscribe</label>
+          <input type="radio" name="subscribe" value="0" title="yes" checked>
+          <input type="radio" name="subscribe" value="1" title="no">
+        </div>
+        <div class="layui-form-item">
+          <button class="layui-btn" lay-submit>确 定</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
 </div>
 {% endblock %}

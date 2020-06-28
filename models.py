@@ -1,5 +1,6 @@
 '''
 Database: Mongodb
+涉及到数据库操作的函数
 '''
 from pymongo import MongoClient
 from apis import aep_device_management
@@ -29,66 +30,33 @@ def UpdateAllProduct(appKey:str, appSecret:str):
     更新所有产品
     '''
     coll_product = Connect('product')
-    result = aep_product_management.QueryProductList(appKey, appSecret, '', 1, 40)
+    result = aep_product_management.QueryProductList(appKey, appSecret, '', '', '')
     r = loads(result.decode('UTF-8'))
     rr = r['result']['list']
-    for i in rr:
-        count = coll_product.count_documents({"productId": i["productId"]})
-        if count == 0:
-            coll_product.insert_one(i)
-        else:
-            pass
+    # 删了重新添加
+    coll_product.delete_many({})
+    coll_product.insert(rr)
+        
 
 def UpdateAllDevice(appKey:str, appSecret:int):
     '''
     更新数据库中所有产品下的设备
+    不能重复添加
     '''
     coll_product = Connect('product')
+    coll_device = Connect('device')
+    coll_device.delete_many({})
     productId = []
     MasterKey = []
     for i in coll_product.find({}, {'_id': 0, 'productId': 1, 'apiKey': 1}):
         productId.append(i['productId'])
         MasterKey.append(i['apiKey'])
     for i in range(len(productId)):
-        result = aep_device_management.QueryDeviceList(appKey, appSecret, MasterKey[i], productId[i], '', 1, 40)
+        result = aep_device_management.QueryDeviceList(appKey, appSecret, MasterKey[i], productId[i], '', '', '')
         r = loads(result.decode('UTF-8'))
         rr = r['result']['list']
-        coll_device = Connect('device')
-        # 避免重复写入数据库
-        for j in rr:
-            count = coll_device.count_documents({"deviceId": j["deviceId"]})
-            if count == 0:
-                coll_device.insert_one(j)
-            else:
-                pass
-
-def QueryProduct(productId:int, keywords:str):
-    '''
-    查询指定产品
-    支持产品id和产品名关键词查询
-    '''
-    coll_product = Connect('product')
-    r = list(coll_product.find({'$or': [{'productId': productId}, {'productName': {'$regex': keywords}}]}))
-    if r == []:
-        return "无结果"
-    else:
-        return r
-
-def ProductList():
-    '''
-    产品列表
-    '''
-    coll_product = Connect('product')
-    r = coll_product.find({},{'_id': 0, 'productId': 1, 'productName': 1, 'createTime': 1, 'deviceCount': 1, 'thirdTypeValue': 1})
-    return r
-
-def DeviceList():
-    '''
-    设备列表
-    '''
-    coll_device = Connect('device')
-    r = coll_device.find({},{'_id': 0, 'deviceName': 1, 'deviceId':1, 'productId': 1, 'createTime': 1, 'onlineAt': 1, 'updateTime': 1})
-    return r
+        # 删了重加
+        coll_device.insert(rr)
 
 def UpdateEvent(appKey:str, appSecret:str):
     '''
@@ -116,22 +84,18 @@ def UpdateEvent(appKey:str, appSecret:str):
                 else:
                     pass
 
-def EventList():
-    coll_event = Connect('event')
-    r = coll_event.find({},{'_id': 0, 'eventContent': 1, 'createTime': 1})
-    return r
-
-
-def RemoveDevice(deviceId:str):
+def QueryProduct(productId:int, keywords:str):
     '''
-    根据设备id删除设备
-    '''
-    coll_device = Connect('device')
-    coll_device.delete_one({'deviceId': deviceId})
-
-def RemoveProduct(productId:int):
-    '''
-    删除产品，前提是该产品下无设备
+    查询指定产品
+    支持产品id和产品名关键词查询
     '''
     coll_product = Connect('product')
-    coll_product.delete_one({'productId': productId})
+    r = list(coll_product.find({'$or': [{'productId': productId}, {'productName': {'$regex': keywords}}]}))
+    if r == []:
+        return "无结果"
+    else:
+        return r
+
+
+
+
