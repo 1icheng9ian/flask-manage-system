@@ -1,7 +1,8 @@
-'''
+"""
 Database: Mongodb
 涉及到数据库操作的函数
-'''
+"""
+
 from json import loads
 
 from pymongo import MongoClient
@@ -48,6 +49,7 @@ def UpdateAllDevice(appKey:str, appSecret:int):
     '''
     coll_product = Connect('product')
     coll_device = Connect('device')
+    # 删了重加
     coll_device.delete_many({})
     productId = []
     MasterKey = []
@@ -58,7 +60,6 @@ def UpdateAllDevice(appKey:str, appSecret:int):
         result = QueryDeviceList(appKey, appSecret, MasterKey[i], productId[i], '', '', '')
         r = loads(result.decode('UTF-8'))
         rr = r['result']['list']
-        # 删了重加
         coll_device.insert(rr)
 
 def UpdateEvent(appKey:str, appSecret:str):

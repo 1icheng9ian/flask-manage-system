@@ -41,7 +41,10 @@ def keeplog():
     if user:
         return { 'login_user': user }
     return {}
-    
+
+@app.route('/register')
+def register():
+    return render_template('/user/register.html')
 
 @app.route('/logout')
 def logout():
@@ -50,6 +53,10 @@ def logout():
     '''
     session.clear()
     return redirect(url_for('index'))
+
+@app.route('/user/info')
+def user_info():
+    return render_template('/user/info.html')
 
 @app.route('/home')
 def home():
