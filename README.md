@@ -22,6 +22,7 @@
 ### API来源
 + [中国电信物联网开放平台][1]  
 ### 依赖
-    pip install pymongo, flask
+推荐使用 `conda` 管理包  
+`$ conda create --name flask --file requirements.txt`
 
 [1]: https://www.ctwing.cn/
