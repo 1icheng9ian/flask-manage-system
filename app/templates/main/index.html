@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}主页{% endblock %}
+<!-- 对应今日看板 -->
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span>设备信息总览</span>
+                    <a href="#" class="panel-a-tips">
+                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 同步
+                    </a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">在线</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <h3>{{ device_online }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">离线</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <h3>{{ device_offline }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">故障</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <h3>{{ device_fault }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

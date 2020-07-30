@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}基本资料{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar2.html' %}
+
+{% include '_sidebar2.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    超级管理员信息
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-6">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td>用户名</td>
+                                    <td>{{ current_user.username}}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        appkey
+                                        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="请在aep平台查询"></span>
+                                    </td>
+                                    {% if not current_user.appkey %}
+                                    <td>未填写</td>
+                                    {% else %}
+                                    <td>{{ current_user.appkey }}</td>
+                                    {% endif %}
+                                </tr>
+                                <tr>
+                                    <td>
+                                        appsecret
+                                        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="请在aep平台查询"></span>
+                                    </td>
+                                    {% if not current_user.appsecret %}
+                                    <td>未填写</td>
+                                    {% else %}
+                                    <td>{{ current_user.appsecret }}</td>
+                                    {% endif %}
+                                </tr>
+                            </tbody>
+                        </table>
+    
+                        <a href="{{ url_for('super_admin.super_user_edit') }}">
+                            <button class="btn btn-sm btn-primary">修改信息</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+{% endblock %}

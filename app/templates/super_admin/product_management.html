@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}超级用户{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar2.html' %}
+
+{% include '_sidebar2.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>公共产品</span>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" method="POST">
+                            {{ form.csrf_token }}
+                        
+                            {{ form.productId.label }}
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="产品号通过aep平台查询"></span>
+                            {{ form.productId }}
+                            
+                            <button class="btn btn-primary btn-sm" type="submit">添加</button>
+                            <a href="{{ url_for('super_admin.create_public_product') }}">
+                                <button class="btn btn-sm btn-primary diable" disabled="disabled">创建</button> <!--暂时不可用-->
+                            </a>
+                            {% for msg in form.productId.errors %}
+                            <p>{{ msg }}</p>
+                            {% endfor %}
+                        </form>
+                        <div class="container-fluid">
+                            {% import "_msg.html" as messages %}
+                            {{ messages.render_msg() }}
+                        </div>
+                        {% for product in public_products %}
+                        <div class="col-sm-6 col-md-4">
+                            <div class="thumbnail">
+                                <h4>{{product.productName}}</h4>
+                                <p>产品id: {{ product.productId }}</p>
+                                <p>产品型号: {{ product.tupDeviceModel }}</p>
+                                <p>产品类别: {{ product.thirdTypeValue }}</p>
+                                <p>产品协议: {{ product.productProtocol }}</p>
+                                <p>
+                                    <a href="{{ url_for('super_admin.delete_public_product', productId=product.productId) }}" class="btn btn-xs btn-danger" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="删除"></span>
+                                    </a>
+                                    <a href="#" class="btn btn-xs btn-primary">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="设备添加详情"></span>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+{% endblock %}

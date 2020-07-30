@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}基本资料{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    修改密码
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" method="POST">
+                        {{ form.csrf_token }}
+                        
+                        {{ form.current_password.label }}
+                        <p>{{ form.current_password }}</p>
+                        
+                        {{ form.new_password.label }}
+                        <p>{{ form.new_password }}</p>
+                        {% for msg in form.new_password.errors %}
+                        <p>{{ msg }}</p>
+                        {% endfor %}
+
+                        {{ form.confirm_password.label }}
+                        <p>{{ form.confirm_password }}</p>
+                        {% for msg in form.confirm_password.errors %}
+                        <p>{{ msg }}</p>
+                        {% endfor %}
+
+                        <button class="btn btn-primary col-sm-1" type="submit">确认</button>
+                        {% import "_msg.html" as messages %}
+                        {{ messages.render_msg() }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

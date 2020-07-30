@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}设备{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a href="{{ url_for('main.device') }}">
+                            <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> 添加新设备
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" method="POST">
+                            {{ form.csrf_token }}
+
+                            <label for="productId">选择产品</label>
+                            {% for product in data %}
+                            <p>
+                                <input id="productId" name="productId" required type="radio" value="{{product.productId}}">
+                                {{ product.productName }}
+                            </p>
+                            {% endfor %}
+
+                            {{ form.imei.label }}
+                            <p>{{ form.imei }}</p>
+                            {% for msg in form.imei.errors %}
+                            <p>{{ msg }}</p>
+                            {% endfor %}
+
+                            {{ form.company.label }}
+                            <p>{{ form.company }}</p>
+
+                            {{ form.location.label }}
+                            <p>{{ form.location }}</p>
+
+                            {{form.autoObserver.label}}
+                            <p>{{ form.autoObserver }}</p>
+
+                            <button class="btn btn-primary" type="submit">确认</button>
+                            <button class="btn btn-primary" type="reset">重置</button>
+                        </form>
+                        {% import "_msg.html" as messages %}
+                        {{ messages.render_msg() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            
+
+{% endblock %}

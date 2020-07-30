@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}设备{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>所有设备</span>
+                        <a href="{{ url_for('main.add_device') }}">
+                            <button class="btn btn-xs btn-primary">添加</button>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        
+                        {% if not count %}
+                            <div class="container-fluid">
+                                <h4>没有添加任何设备</h4>
+                            </div>
+                        {% else %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>操作</th>
+                                        <th>imei号</th>
+                                        <th>所属产品</th>
+                                        <th>创建者</th>
+                                        <th>创建时间</th>
+                                        <th>所属公司</th>
+                                        <th>安装位置</th>
+                                    </tr>
+                                </thead>
+                                {% for device in devices %}
+                                <tbody>
+                                    {% if device.state == 'offline' %}
+                                    <tr class="acitve">
+                                    {% elif device.state == 'online' %}
+                                    <tr class="success">
+                                    {% else %}
+                                    <tr class="danger">
+                                    {% endif %}
+                                        <td>
+                                            <a href="{{ url_for('main.delete_device', imei = device.imei) }}" class="btn btn-xs btn-danger" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}">
+                                                <span class="glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="删除"></span>
+                                            </a>
+                                            <a href="#" class="btn btn-xs btn-info">
+                                                <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="添加订阅"></span>
+                                            </a>
+                                        </td>
+                                        <td>{{ device.imei }}</td>
+                                        <td>{{ device.productName }}</td>
+                                        <td>{{ device.operator }}</td>
+                                        <td>{{ device.createTime }}</td>
+                                        <td>{{ device.company }}</td>
+                                        <td>{{ device.location }}</td>
+                                    </tr>
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                            <!-- 底部需要分页 -->
+                        {% endif %}
+                        
+                        {% import "_msg.html" as messages %}
+                        {{ messages.render_msg() }}
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+{% endblock %}

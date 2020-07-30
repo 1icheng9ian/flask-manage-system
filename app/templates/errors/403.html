@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Forbidden{% endblock %}
+
+{% block body %}
+<div class="col-md-6 col-md-offset-2">
+    <div class="row">
+        <h3>403 错误</h3>
+        {% if msg %}
+            <p>{{ msg }}</p>
+        {% else %}
+            <p>你的请求被禁止</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

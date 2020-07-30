@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}超级用户{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar2.html' %}
+
+{% include '_sidebar2.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a href="{{ url_for('super_admin.product_management') }}">
+                            <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> 创建公共产品
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        暂不支持创建新的公共产品
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+
+
+{% endblock %}
+
+
+

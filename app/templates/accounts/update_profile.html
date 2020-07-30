@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}基本资料{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="{{ url_for('accounts.user') }}">
+                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> 个人信息
+                    </a>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" method="POST" id="add_user">
+                        {{ form.csrf_token }}
+                        
+                        {{ form.cellphone.label }}
+                        <p>{{ form.cellphone }}</p>
+                        
+                        {{ form.company.label }}
+                        <p>{{ form.company }}</p>
+
+                        {{ form.address.label }}
+                        <p>{{ form.address }}</p>
+                        <button class="btn btn-primary" type="submit" name="add_user">确认修改</button>
+                        
+                    </form>
+                    {% import "_msg.html" as messages %}
+                    {{ messages.render_msg() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+{% endblock %}

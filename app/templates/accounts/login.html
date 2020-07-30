@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}登陆{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <form class="form-signin" method="POST">
+        <h2 class="form-signin-heading">登录</h2>
+        <span><a href="{{ url_for('super_admin.login') }}">超级管理员入口</a></span>
+        <div>
+            {{ form.csrf_token }} <!-- 鉴权这行不能少 -->
+
+            {{ form.username.label }}
+            <p>{{ form.username }}</p>
+
+            {{ form.password.label }}
+            <p>{{ form.password }}</p>
+        </div>
+        <button type="submit" class="btn btn-primary" name="login">登录</button>
+        
+        <a href="{{ url_for('accounts.register') }}">没有账号，点击注册</a>
+
+    </form>
+    {% import "_msg.html" as messages %}
+    {{ messages.render_msg() }}
+    
+</div>
+
+{% endblock %}
+
+

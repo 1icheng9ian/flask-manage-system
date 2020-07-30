@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}注册{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <form class="form-signin" method="POST" id="register">
+        <h2 class="form-signin-heading">注册</h2>
+        {{ form.csrf_token }}
+
+        {{ form.username.label }}
+        <p>{{ form.username }}</p>
+        {% for msg in form.username.errors %}
+        <p>{{ msg }}</p>
+        {% endfor %}
+
+        {{ form.password.label }}
+        <p>{{ form.password }}</p>
+        {% for msg in form.password.errors %}
+        <p>{{ msg }}</p>
+        {% endfor %}
+
+        {{ form.password2.label }}
+        <p>{{ form.password2 }}</p>
+
+        {{ form.role.label }}
+        <p>{{ form.role }}</p>
+
+        <button type="submit" class="btn btn-primary" name="register">注册</button>
+
+        <a href="{{ url_for('accounts.login') }}">已有账号，直接登录</a>
+
+    </form>
+    {% import "_msg.html" as messages %}
+    {{ messages.render_msg() }}
+</div>
+{% endblock %}

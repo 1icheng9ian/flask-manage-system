@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}基本资料{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    个人信息
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-6">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td>用户名</td>
+                                    <td>{{ current_user.username}}</td>
+                                </tr>
+                                <tr>
+                                    <td>手机号</td>
+                                    {% if not current_user.cellphone %}
+                                    <td>未填写</td>
+                                    {% else %}
+                                    <td>{{ current_user.cellphone }}</td>
+                                    {% endif %}
+                                </tr>
+                                <tr>
+                                    <td>公司</td>
+                                    {% if not current_user.company %}
+                                    <td>未填写</td>
+                                    {% else %}
+                                    <td>{{ current_user.company }}</td>
+                                    {% endif %}
+                                </tr>
+                                <tr>
+                                    <td>地址</td>
+                                    {% if not current_user.address %}
+                                    <td>未填写</td>
+                                    {% else %}
+                                    <td>{{ current_user.address }}</td>
+                                    {% endif %}
+                                </tr>
+                            </tbody>
+                        </table>
+    
+                        <a href="{{ url_for('accounts.update_profile') }}">
+                            <button class="btn btn-sm btn-primary">修改信息</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+{% endblock %}
+
+

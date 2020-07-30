@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}404{% endblock %}
+
+{% block body %}
+<div class="col-md-6 col-md-offset-2">
+    <div class="row">
+        <h3>404 错误</h3>
+        {% if msg %}
+            <p>{{ msg }}</p>
+        {% else %}
+            <p>页面已删除丢失，请联系管理员</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
