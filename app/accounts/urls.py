@@ -29,5 +29,7 @@ super_admin.add_url_rule('/super_user', 'super_user', super_views.super_user)
 super_admin.add_url_rule('/super_user_edit', 'super_user_edit', super_views.super_user_edit, methods=['GET', 'POST'])
 # delete 时，需要从前端传参
 super_admin.add_url_rule('/delete_public_product/<string:productId>', 'delete_public_product', super_views.delete_public_product, methods=['GET'])
-
+super_admin.add_url_rule('/history', 'history', super_views.history)
+super_admin.add_url_rule('/bulletin', 'bulletin', super_views.bulletin)
+super_admin.add_url_rule('/edit_bulletin', 'edit_bulletin', super_views.edit_bulletin, methods=['GET', 'POST'])
 

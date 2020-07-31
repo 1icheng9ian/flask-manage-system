@@ -4,6 +4,7 @@
 '''
 
 from app import db
+from datetime import datetime
 
 
 PROTOCOL = {1: 'T-LINK协议', 2: 'MQTT协议', 3: 'LWM2M协议',
@@ -21,3 +22,18 @@ class PublicProduct(db.Document):
     productTypeValue = db.StringField()
     secondaryTypeValue = db.StringField
     thirdTypeValue = db.StringField()
+
+
+class History(db.Document):
+    operationTime = db.DateTimeField(required=True)
+    operator = db.StringField(required=True)
+    company = db.StringField(required=True)
+    operation = db.StringField(required=True)
+    productName = db.StringField(required=True)
+    deviceName = db.StringField(required=True)
+
+class Bulletin(db.Document):
+    time = db.DateTimeField(required=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    title = db.StringField(required=True)
+    content = db.StringField()
+    author = db.StringField()

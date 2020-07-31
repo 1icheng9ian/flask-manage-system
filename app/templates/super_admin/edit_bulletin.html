@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}编辑公告{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar2.html' %}
+
+{% include '_sidebar2.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a href="{{ url_for('super_admin.bulletin') }}">
+                            <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> 编辑公告
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" method="POST">
+                            {{ form.csrf_token }}
+
+                            {{ form.title.label }}
+                            <p>{{ form.title }}</p>
+                            {% for msg in form.title.errors %}
+                            <p>{{ msg }}</p>
+                            {% endfor %}
+
+                            {{ form.content.label }}
+                            <p>{{ form.content(cols=50,rows=15) }}</p>
+                            {% for msg in form.title.errors %}
+                            <p>{{ msg }}</p>
+                            {% endfor %}
+
+                            <button class="btn btn-primary" type="submit" onclick="{if(confirm('确定发布吗?')){this.document.formname.submit();return true;}return false;}">发布</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

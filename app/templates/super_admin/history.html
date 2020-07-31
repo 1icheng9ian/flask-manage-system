@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}操作记录{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar2.html' %}
+
+{% include '_sidebar2.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>操作记录</span>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>操作</th>
+                                    <th>操作时间</th>
+                                    <th>操作人</th>
+                                    <th>所属公司</th>
+                                    <th>产品名</th>
+                                    <th>设备名</th>
+                                </tr>
+                            </thead>
+                            {% for history in historys %}
+                            <tbody>
+                                {% if history.operation == 'add' %}
+                                <tr class="success">
+                                {% else %}
+                                <tr class="danger">
+                                {% endif %}
+                                    <td>
+                                        {% if history.operation == 'add' %}
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                        {% else %}
+                                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ history.operationTime }}</td>
+                                    <td>{{ history.operator }}</td>
+                                    <td>{{ history.company }}</td>
+                                    <td>{{ history.productName }}</td>
+                                    <td>{{ history.deviceName }}</td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

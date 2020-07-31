@@ -4,7 +4,7 @@
 '''
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, ValidationError
+from wtforms import StringField, TextAreaField, ValidationError
 from wtforms.validators import DataRequired, Length
 from .super_models import PublicProduct
 
@@ -19,7 +19,8 @@ class AddPublicProductForm(FlaskForm):
     def validate_productId(self, field):
         if PublicProduct.objects.filter(productId=field.data).count() > 0:
             raise ValidationError('请勿重复添加')
-
+'''
+# 未使用
 class CreatePublicProductForm(FlaskForm):
     productName = StringField('产品名称', validators=[DataRequired(), Length(30)])
     productType = StringField('产品分类', validators=[DataRequired()])
@@ -27,8 +28,11 @@ class CreatePublicProductForm(FlaskForm):
     thirdType = StringField('三级分类', validators=[DataRequired()])
     nodeType = StringField('节点类型', validators=[DataRequired()])
     accessType = StringField('接入类型', validators=[DataRequired()])
-    
+'''  
 
+class EditBulletinForm(FlaskForm):
+    title = StringField('标题', validators=[DataRequired()])
+    content = TextAreaField('内容', validators=[Length(max=512)])
 
 
 

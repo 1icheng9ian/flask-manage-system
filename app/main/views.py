@@ -14,7 +14,7 @@ from ..accounts.models import User
 from . import models
 from .forms import AddDeviceForm
 from ..accounts import super_models, models as Usermodels
-
+import datetime
 
 @login_required
 def index():
@@ -44,11 +44,12 @@ def add_device():
     # 首先选择公共产品
     # 单选框
     public_products = super_models.PublicProduct.objects.all()
-    
+
     form = AddDeviceForm()
     if form.validate_on_submit():
         # database
         device = models.Device()
+        history = super_models.History()    # 添加操作历史
         # operator is current user
         device.operator = current_user.username
         device.imei = form.imei.data
@@ -56,7 +57,7 @@ def add_device():
         productId = request.values.get('productId')
         public_info = super_models.PublicProduct.objects.get_or_404(productId=productId)
         device.productName = public_info.productName
-        productName = public_info.productName
+        # productName = public_info.productName
         device.apiKey = public_info.apiKey
         apiKey = public_info.apiKey
         # deviceName is the location
@@ -86,6 +87,15 @@ def add_device():
         if result['code'] == 0:
             device.deviceId = result['result']['deviceId']
             device.save()
+            # 保存操作历史
+            history.operationTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            history.operator = current_user.username
+            history.company = form.company.data
+            history.productName = public_info.productName
+            history.deviceName = form.location.data
+            history.operation = 'add'
+            history.save()
+
             flash('添加成功', 'success')
         else:
             flash(result['msg'], 'warning')
@@ -95,12 +105,28 @@ def add_device():
 @login_required
 def delete_device(imei):
     this_device = models.Device.objects.get_or_404(imei=imei)
+    # 变量提取
+    company = this_device.company
+    productName = this_device.productName
+    deviceName = this_device.deviceName
+
+    history = super_models.History()    # 操作历史
+    
     appkey = Usermodels.User.objects.get_or_404(role='super_admin').appkey
     appsecret = Usermodels.User.objects.get_or_404(role='super_admin').appsecret
     result = DeleteDevice(appkey, appsecret, this_device.apiKey, this_device.productId, this_device.deviceId)
     result = loads(result.decode('UTF-8'))
     if result['code'] == 0:
         this_device.delete()
+
+        history.operationTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        history.operator = current_user.username
+        history.company = company
+        history.productName = productName
+        history.deviceName = deviceName
+        history.operation = 'del'
+        history.save()
+
         return redirect(url_for('main.device'))
     else:
         flash(result['msg'], 'warning')

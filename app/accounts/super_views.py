@@ -5,7 +5,7 @@
 from flask import render_template, redirect, url_for, flash, current_app
 from flask_login import current_user, login_user, login_required
 from flask_principal import identity_changed, Identity
-from .super_forms import EditAdminInfoForm, AddPublicProductForm
+from .super_forms import EditAdminInfoForm, AddPublicProductForm, EditBulletinForm
 from .forms import SuperLoginForm
 from . import models
 from . import super_models
@@ -122,3 +122,19 @@ def create_public_product():
     # 该功能暂时不可用
     # 通过aep平台直接创建产品
     return render_template('super_admin/create_public_product.html')
+
+@login_required
+def history():
+    history = super_models.History.objects.all()
+    data = {}
+    data['historys'] = history
+    return render_template('super_admin/history.html', **data)
+
+@login_required
+def bulletin():
+    return render_template('super_admin/bulletin.html')
+
+@login_required
+def edit_bulletin():
+    form = EditBulletinForm()
+    return render_template('super_admin/edit_bulletin.html', form=form)
