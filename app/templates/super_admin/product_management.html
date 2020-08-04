@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <span>公共产品</span>
+                        <span>新产品</span>
                     </div>
                     <div class="panel-body">
                         <form class="form-horizontal" method="POST">
@@ -36,23 +36,29 @@
                             <p>{{ msg }}</p>
                             {% endfor %}
                         </form>
-                        <div class="container-fluid">
-                            {% import "_msg.html" as messages %}
-                            {{ messages.render_msg() }}
-                        </div>
+                        {% import "_msg.html" as messages %}
+                        {{ messages.render_msg() }}
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>公共产品</span>
+                    </div>
+                    <div class="panel-body">
                         {% for product in public_products %}
                         <div class="col-sm-6 col-md-4">
                             <div class="thumbnail">
                                 <h4>{{product.productName}}</h4>
-                                <p>产品id: {{ product.productId }}</p>
-                                <p>产品型号: {{ product.tupDeviceModel }}</p>
-                                <p>产品类别: {{ product.thirdTypeValue }}</p>
-                                <p>产品协议: {{ product.productProtocol }}</p>
+                                <p><strong>产品id:</strong>{{ product.productId }}</p>
+                                <p><strong>产品型号:</strong>{{ product.tupDeviceModel }}</p>
+                                <p><strong>产品类别:</strong> {{ product.thirdTypeValue }}</p>
+                                <p><strong>产品协议:</strong> {{ product.productProtocol }}</p>
                                 <p>
+                                    <strong>操作:</strong>
                                     <a href="{{ url_for('super_admin.delete_public_product', productId=product.productId) }}" class="btn btn-xs btn-danger" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}">
                                         <span class="glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="删除"></span>
                                     </a>
-                                    <a href="#" class="btn btn-xs btn-primary">
+                                    <a href="#" class="btn btn-xs btn-primary" disabled="disabled">
                                         <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="设备添加详情"></span>
                                     </a>
                                 </p>

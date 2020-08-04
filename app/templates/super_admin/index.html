@@ -20,46 +20,44 @@
                     <span>子用户信息</span>
                 </div>
                 <div class="panel-body">
-                    {% if not users %}
-                        <div class="container-fluid" style="margin-top: -20px;">
-                            <h4>暂未添加子用户</h4>
-                        </div>
-                    {% else %}
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>操作</th>
-                                    <th>用户名</th>
-                                    <th>所属公司</th>
-                                    <th>联系方式</th>
-                                    <th>公司地址</th>
-                                    <th>是否实名</th>
-                                </tr>
-                            </thead>
-                            {% for user in users %}
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <a href="#" class="btn btn-xs btn-danger">
-                                            <span class="glyphicon glyphicon-erase" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="重置密码"></span>
-                                        </a>
-                                    </td>
-                                    <td>{{ user.username }}</td>
-                                    <td>{{ user.company }}</td>
-                                    <td>{{ user.cellphone }}</td>
-                                    <td>{{ user.address }}</td>
-                                    <td>
-                                        {% if user.realname %}
-                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                        {% else %}
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            </tbody>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>操作</th>
+                                <th>用户名</th>
+                                <th>所属公司</th>
+                                <th>联系方式</th>
+                                <th>公司地址</th>
+                                <th>是否实名</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users.items %}
+                            <tr>
+                                <td>
+                                    <a href="#" class="btn btn-xs btn-danger" disabled="disabled">
+                                        <span class="glyphicon glyphicon-erase" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="重置密码"></span>
+                                    </a>
+                                </td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.company }}</td>
+                                <td>{{ user.cellphone }}</td>
+                                <td>{{ user.address }}</td>
+                                <td>
+                                    {% if user.wechatname %}
+                                        <span>{{ user.wechatname }}</span>
+                                    {% else %}
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" style="text-align: left">没有记录</td></tr>
                             {% endfor %}
-                        </table>
-                    {% endif %}
+                        </tbody>
+                    </table>
+                    {% import '_pagination.html' as pagination %}
+                    {{ pagination.render_pagination(users) }}
                 </div>
             </div>
         </div>

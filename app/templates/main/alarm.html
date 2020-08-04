@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}报警信息{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>报警信息</span>
+                    </div>
+                    <div class="panel-body">
+                        <!-- 故障警报 red danger -->
+                        <div class="bs-callout bs-callout-danger">
+                            
+                        </div>
+                        <!-- 防拆警报 yellow warning -->
+                        <div class="bs-callout bs-callout-warning">
+                            
+                        </div>
+                        <!-- 设备上线通知 green success -->
+                        <div class="bs-callout bs-callout-success">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+                    

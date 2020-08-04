@@ -32,8 +32,8 @@
                                     <th>设备名</th>
                                 </tr>
                             </thead>
-                            {% for history in historys %}
                             <tbody>
+                            {% for history in histories.items %}
                                 {% if history.operation == 'add' %}
                                 <tr class="success">
                                 {% else %}
@@ -52,9 +52,11 @@
                                     <td>{{ history.productName }}</td>
                                     <td>{{ history.deviceName }}</td>
                                 </tr>
+                            {% endfor %}   
                             </tbody>
-                            {% endfor %}
                         </table>
+                        {% import '_pagination.html' as pagination %}
+                        {{ pagination.render_pagination(histories) }}
                     </div>
                 </div>
             </div>

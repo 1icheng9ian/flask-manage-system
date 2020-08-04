@@ -35,5 +35,6 @@ class History(db.Document):
 class Bulletin(db.Document):
     time = db.DateTimeField(required=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     title = db.StringField(required=True)
-    content = db.StringField()
+    istop = db.BooleanField(default=False)  # 是否置顶，默认不置顶
+    content = db.StringField(required=True)
     author = db.StringField()

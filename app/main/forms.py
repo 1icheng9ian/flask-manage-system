@@ -5,6 +5,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, ValidationError
+from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length
 from .models import Device
 
@@ -20,4 +21,5 @@ class AddDeviceForm(FlaskForm):
         if Device.objects.filter(imei=field.data).count() > 0:
             raise ValidationError('设备已添加')
 
-
+class QueryDeviceForm(FlaskForm):
+    imei = StringField('imei号')

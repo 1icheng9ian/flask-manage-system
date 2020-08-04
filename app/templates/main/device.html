@@ -17,59 +17,77 @@
             <div class="row">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <span>所有设备</span>
-                        <a href="{{ url_for('main.add_device') }}">
-                            <button class="btn btn-xs btn-primary">添加</button>
-                        </a>
+                        <span>查询内容</span>
                     </div>
                     <div class="panel-body">
-                        
-                        {% if not count %}
-                            <div class="container-fluid">
-                                <h4>没有添加任何设备</h4>
-                            </div>
-                        {% else %}
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>操作</th>
-                                        <th>imei号</th>
-                                        <th>所属产品</th>
-                                        <th>创建者</th>
-                                        <th>创建时间</th>
-                                        <th>所属公司</th>
-                                        <th>安装位置</th>
-                                    </tr>
-                                </thead>
-                                {% for device in devices %}
-                                <tbody>
-                                    {% if device.state == 'offline' %}
-                                    <tr class="acitve">
-                                    {% elif device.state == 'online' %}
-                                    <tr class="success">
-                                    {% else %}
-                                    <tr class="danger">
-                                    {% endif %}
-                                        <td>
-                                            <a href="{{ url_for('main.delete_device', imei = device.imei) }}" class="btn btn-xs btn-danger" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}">
-                                                <span class="glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="删除"></span>
-                                            </a>
-                                            <a href="#" class="btn btn-xs btn-info">
-                                                <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="添加订阅"></span>
-                                            </a>
-                                        </td>
-                                        <td>{{ device.imei }}</td>
-                                        <td>{{ device.productName }}</td>
-                                        <td>{{ device.operator }}</td>
-                                        <td>{{ device.createTime }}</td>
-                                        <td>{{ device.company }}</td>
-                                        <td>{{ device.location }}</td>
-                                    </tr>
-                                </tbody>
+                        <form class="form-inline" method="POST">
+                            {{ form.csrf_token }}
+
+                            {{ form.imei.label }}
+                            {{ form.imei }}
+                            
+                            <button class="btn btn-xs btn-primary" type="submit" disabled="disabled">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true">搜索</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="col-md-3">
+                            设备数据
+                        </div>
+                        <div class="col-md-offset-10">
+                            <a href="{{ url_for('main.add_device') }}">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true">新增</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>imei号</th>
+                                    <th>所属产品</th>
+                                    <th>创建者</th>
+                                    <th>创建时间</th>
+                                    <th>所属公司</th>
+                                    <th>安装位置</th>
+                                    <th>设备状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for device in devices.items %}
+                                <tr>
+                                    <td>{{ device.imei }}</td>
+                                    <td>{{ device.productName }}</td>
+                                    <td>{{ device.operator }}</td>
+                                    <td>{{ device.createTime }}</td>
+                                    <td>{{ device.company }}</td>
+                                    <td>{{ device.location }}</td>
+                                    <td>
+                                        {% if device.state == 'offline' %}
+                                        <span class="label label-default">未激活</span>
+                                        {% elif device.state == 'online' %}
+                                        <span class="label label-success">在线</span>
+                                        {% else %}
+                                        <span class="label label-danger">下线</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('main.delete_device', imei = device.imei) }}" class="btn btn-xs btn-danger" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="9" style="text-align: left">没有记录</td></tr>
                                 {% endfor %}
-                            </table>
-                            <!-- 底部需要分页 -->
-                        {% endif %}
+                            </tbody>
+                        </table>
+                        {% import '_pagination.html' as pagination %}
+                        {{ pagination.render_pagination(devices) }}
                         
                         {% import "_msg.html" as messages %}
                         {{ messages.render_msg() }}
@@ -83,8 +101,3 @@
 
 {% endblock %}
 
-{% block js %}
-<script>
-	$(function () { $("[data-toggle='tooltip']").tooltip(); });
-</script>
-{% endblock %}

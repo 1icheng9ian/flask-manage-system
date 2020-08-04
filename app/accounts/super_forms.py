@@ -32,7 +32,7 @@ class CreatePublicProductForm(FlaskForm):
 
 class EditBulletinForm(FlaskForm):
     title = StringField('标题', validators=[DataRequired()])
-    content = TextAreaField('内容', validators=[Length(max=512)])
+    content = TextAreaField('内容', validators=[DataRequired(), Length(max=512)])
 
 
 

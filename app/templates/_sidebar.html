@@ -1,12 +1,16 @@
 <div class="col-md-3 col-md-2 sidebar">
   <ul class="nav nav-sidebar">
     <li><a href="{{ url_for('main.index') }}">今日看板</a></li>
-    <li><a href="#">消息公告</a></li>
+    <li><a href="{{ url_for('main.bulletin') }}">消息公告</a></li>
   </ul>
   <ul class="nav nav-sidebar">
     <li><a href="{{ url_for('main.device') }}">设备管理</a></li>
   </ul>
   <ul class="nav nav-sidebar">
-    <li><a href="#">实时报警</a></li>
+    <li><a href="{{ url_for('main.alarm') }}">实时报警</a></li>
+  </ul>
+  <ul class="nav nav-sidebar">
+    <li><a href="{{ url_for('accounts.user') }}">用户资料</a></li>
+    <li><a href="{{ url_for('accounts.update_pass') }}">修改密码</a></li>
   </ul>
 </div>

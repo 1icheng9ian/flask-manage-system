@@ -2,7 +2,7 @@
 '''
 @Time    :   2020/07/24
 '''
-from flask import render_template, redirect, url_for, flash, current_app
+from flask import render_template, redirect, url_for, flash, current_app, request
 from flask_login import current_user, login_user, login_required
 from flask_principal import identity_changed, Identity
 from .super_forms import EditAdminInfoForm, AddPublicProductForm, EditBulletinForm
@@ -61,8 +61,15 @@ def index():
     暂时先就显示用户组
     '''
     users = models.User.objects.filter(role='admin')
-    data = {}
-    data['users'] = users
+
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+    
+    users = users.paginate(page=cur_page, per_page=10)
+
+    data = {'users': users}
     return render_template('super_admin/index.html', **data)
 
 @login_required
@@ -104,8 +111,7 @@ def product_management():
                 flash(result['msg'], 'warning') # 使用aep平台的error message
     # acquire data
     public_products = super_models.PublicProduct.objects.all()
-    data = {}
-    data['public_products'] = public_products
+    data = {'public_products': public_products}
     return render_template('super_admin/product_management.html', form=form, **data)
 
 @login_required
@@ -113,8 +119,20 @@ def delete_public_product(productId):
     # 危险操作
     # 这里进行删除操作的时候加上询问框
     # 删除只需要从数据库中删除，aep平台不需要
+    # 如果下面有产品，不能删除
+    # 这里查询device count的方法是向aep平台发送一条查询指令
+    # 这可能会带来一些问题，如直接在平台添加的设备，会查找不到
+    # 如后期aep平台按查询次数收费，可以酌情修改
     this_product = super_models.PublicProduct.objects.get_or_404(productId=productId)
-    this_product.delete()
+    user = current_user
+    appkey = user.appkey
+    appsecret = user.appsecret
+    result = QueryProduct(appKey=appkey, appSecret=appsecret, productId=productId)
+    result = loads(result.decode('UTF-8'))
+    if result['result']['deviceCount'] == 0:
+        this_product.delete()
+    else:
+        flash('该产品下还有设备, 禁止删除!', 'danger')
     return redirect(url_for('super_admin.product_management'))
 
 @login_required
@@ -125,16 +143,37 @@ def create_public_product():
 
 @login_required
 def history():
-    history = super_models.History.objects.all()
-    data = {}
-    data['historys'] = history
+    histories = super_models.History.objects.all()
+
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+
+    histories = histories.paginate(page=cur_page, per_page=10)
+
+    data = {'histories': histories}
     return render_template('super_admin/history.html', **data)
 
 @login_required
-def bulletin():
-    return render_template('super_admin/bulletin.html')
+def super_bulletin():
+    notices = super_models.Bulletin.objects.all()
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+    notices = notices.paginate(page=cur_page, per_page=5)
+    data = {'notices': notices}
+    return render_template('super_admin/super_bulletin.html', **data)
 
 @login_required
 def edit_bulletin():
     form = EditBulletinForm()
+    if form.validate_on_submit():
+        board = super_models.Bulletin()
+        board.title = form.title.data
+        board.content = form.content.data
+        board.author = current_user.username
+        board.save()
+        return redirect(url_for('super_admin.super_bulletin'))
     return render_template('super_admin/edit_bulletin.html', form=form)

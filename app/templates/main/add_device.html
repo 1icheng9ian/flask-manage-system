@@ -25,15 +25,13 @@
                     <div class="panel-body">
                         <form class="form-horizontal" method="POST">
                             {{ form.csrf_token }}
-
-                            <label for="productId">选择产品</label>
-                            {% for product in data %}
                             <p>
-                                <input id="productId" name="productId" required type="radio" value="{{product.productId}}">
-                                {{ product.productName }}
+                                <label for="productId">选择产品: </label>
+                                {% for product in public_products %}
+                                    <input id="productId" name="productId" required type="radio" value="{{product.productId}}">
+                                    {{ product.productName }}
+                                {% endfor %}
                             </p>
-                            {% endfor %}
-
                             {{ form.imei.label }}
                             <p>{{ form.imei }}</p>
                             {% for msg in form.imei.errors %}
@@ -46,11 +44,16 @@
                             {{ form.location.label }}
                             <p>{{ form.location }}</p>
 
-                            {{form.autoObserver.label}}
-                            <p>{{ form.autoObserver }}</p>
+                            <p>
+                                {{ form.autoObserver }}
+                                {{form.autoObserver.label}}
+                            </p>
 
-                            <button class="btn btn-primary" type="submit">确认</button>
-                            <button class="btn btn-primary" type="reset">重置</button>
+                            <p>
+                                <button class="btn btn-primary" type="submit">确认</button>
+                                <button class="btn btn-primary" type="reset">重置</button>
+                            </p>
+                            
                         </form>
                         {% import "_msg.html" as messages %}
                         {{ messages.render_msg() }}

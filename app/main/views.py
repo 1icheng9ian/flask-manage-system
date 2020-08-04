@@ -12,7 +12,7 @@ from apis.aep_device_management import CreateDevice, DeleteDevice
 
 from ..accounts.models import User
 from . import models
-from .forms import AddDeviceForm
+from .forms import AddDeviceForm, QueryDeviceForm
 from ..accounts import super_models, models as Usermodels
 import datetime
 
@@ -24,26 +24,32 @@ def index():
     device_fault = models.Device.objects.filter(Q(state='fault') & Q(operator=current_user.username)).count()
     # 如何判断上线状态是个问题
     # 需要结合报警那块
-    data = {}
-    data['device_online'] = device_online
-    data['device_offline'] = device_offline     # 不是这样写的，但是怎么弄暂时不知道
-    data['device_fault'] = device_fault
+    data = {'device_online': device_online, 'device_offline': device_offline, 'device_fault': device_fault}
+    
     return render_template('main/index.html', **data)
 
 @login_required
 def device():
     devices = models.Device.objects.filter(operator=current_user.username)
-    count = models.Device.objects.filter(operator=current_user.username).count()
-    data = {}
-    data['devices'] = devices
-    data['count'] = count
-    return render_template('main/device.html', **data)
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+    devices = devices.paginate(page=cur_page, per_page=10)
+    
+    form = QueryDeviceForm()    # 查询表单
+    if form.validate_on_submit():
+        imei = form.imei.data
+
+    data = {'devices': devices}
+    return render_template('main/device.html', form=form, **data)
 
 @login_required
 def add_device():
     # 首先选择公共产品
     # 单选框
     public_products = super_models.PublicProduct.objects.all()
+    data = {'public_products': public_products}
 
     form = AddDeviceForm()
     if form.validate_on_submit():
@@ -86,6 +92,8 @@ def add_device():
         result = loads(result.decode('UTF-8'))
         if result['code'] == 0:
             device.deviceId = result['result']['deviceId']
+            # 时间不能在models中直接填入，会出现问题
+            device.createTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             device.save()
             # 保存操作历史
             history.operationTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -95,12 +103,11 @@ def add_device():
             history.deviceName = form.location.data
             history.operation = 'add'
             history.save()
-
             flash('添加成功', 'success')
         else:
             flash(result['msg'], 'warning')
 
-    return render_template('main/add_device.html', form=form, data=public_products)
+    return render_template('main/add_device.html', form=form, **data)
 
 @login_required
 def delete_device(imei):
@@ -130,3 +137,20 @@ def delete_device(imei):
         return redirect(url_for('main.device'))
     else:
         flash(result['msg'], 'warning')
+
+
+@login_required
+def bulletin():
+    notices = super_models.Bulletin.objects.all()
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+    notices = notices.paginate(page=cur_page, per_page=5)
+    data = {'notices': notices}
+    return render_template('main/bulletin.html', **data)
+
+
+@login_required
+def alarm():
+    return render_template('main/alarm.html')

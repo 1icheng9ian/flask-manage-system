@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}消息公告{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar.html' %}
+
+{% include '_sidebar.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>消息公告</span>
+                    </div>
+                    <div class="panel-body">
+                        {% for notice in notices.items %}
+                        <div class="bs-callout bs-callout-info">
+                            <h4>{{ notice.title }}</h4>
+                            <p style="color: #9d9d9d;">
+                                {{ notice.time }}由{{ notice.author }}发布
+                            </p>
+                            <p>{{ notice.content }}</p>
+                        </div>
+                        {% endfor %}
+                        {% import '_pagination.html' as pagination %}
+                        {{ pagination.render_pagination(notices) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
