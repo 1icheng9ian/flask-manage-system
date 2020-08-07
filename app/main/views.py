@@ -12,7 +12,7 @@ from apis.aep_device_management import CreateDevice, DeleteDevice
 
 from ..accounts.models import User
 from . import models
-from .forms import AddDeviceForm, QueryDeviceForm
+from .forms import AddDeviceForm
 from ..accounts import super_models, models as Usermodels
 import datetime
 
@@ -36,19 +36,17 @@ def device():
     except:
         cur_page = 1
     devices = devices.paginate(page=cur_page, per_page=10)
-    
-    form = QueryDeviceForm()    # 查询表单
-    if form.validate_on_submit():
-        imei = form.imei.data
 
     data = {'devices': devices}
-    return render_template('main/device.html', form=form, **data)
+    return render_template('main/device.html', **data)
 
 @login_required
 def add_device():
     # 首先选择公共产品
     # 单选框
     public_products = super_models.PublicProduct.objects.all()
+    if not public_products:
+        flash('产品库中没有产品，请联系超级管理员！', 'warning')
     data = {'public_products': public_products}
 
     form = AddDeviceForm()
@@ -59,8 +57,8 @@ def add_device():
         # operator is current user
         device.operator = current_user.username
         device.imei = form.imei.data
-        device.productId = request.values.get('productId')
         productId = request.values.get('productId')
+        device.productId = request.values.get('productId')
         public_info = super_models.PublicProduct.objects.get_or_404(productId=productId)
         device.productName = public_info.productName
         # productName = public_info.productName
@@ -70,12 +68,9 @@ def add_device():
         device.deviceName = form.location.data
         device.location = form.location.data
         device.company = form.company.data
-        # 自动订阅设置
-        device.autoObserver = form.autoObserver.data
-        if not form.autoObserver.data:
-            autoObserver = 1
-        else:
-            autoObserver = 0
+        # 自动订阅设置, 必须是ture
+        device.autoObserver = True
+        autoObserver = 0
         
         # deviceId 在aep平台注册成功后获取
         # 该用户用的公共产品
@@ -108,36 +103,6 @@ def add_device():
             flash(result['msg'], 'warning')
 
     return render_template('main/add_device.html', form=form, **data)
-
-@login_required
-def delete_device(imei):
-    this_device = models.Device.objects.get_or_404(imei=imei)
-    # 变量提取
-    company = this_device.company
-    productName = this_device.productName
-    deviceName = this_device.deviceName
-
-    history = super_models.History()    # 操作历史
-    
-    appkey = Usermodels.User.objects.get_or_404(role='super_admin').appkey
-    appsecret = Usermodels.User.objects.get_or_404(role='super_admin').appsecret
-    result = DeleteDevice(appkey, appsecret, this_device.apiKey, this_device.productId, this_device.deviceId)
-    result = loads(result.decode('UTF-8'))
-    if result['code'] == 0:
-        this_device.delete()
-
-        history.operationTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        history.operator = current_user.username
-        history.company = company
-        history.productName = productName
-        history.deviceName = deviceName
-        history.operation = 'del'
-        history.save()
-
-        return redirect(url_for('main.device'))
-    else:
-        flash(result['msg'], 'warning')
-
 
 @login_required
 def bulletin():

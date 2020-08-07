@@ -7,12 +7,15 @@ import datetime
 
 from flask import (current_app, flash, redirect, render_template, request,
                    session, url_for)
+from flask.views import MethodView
 from flask_login import current_user, login_required, login_user, logout_user
 from flask_principal import AnonymousIdentity, Identity, identity_changed
 
 from . import models
-from .forms import LoginForm, ModifyPasswordForm, RegisterForm, UpdateProfileForm
+from .forms import (LoginForm, ModifyPasswordForm, RegisterForm,
+                    UpdateProfileForm)
 
+from .permissions import admin_Permission
 
 def login():
     '''
@@ -30,8 +33,10 @@ def login():
         except models.User.DoesNotExist:
             # 没有注册过，就是None
             user = None
-        if user.role == 'admin':
-            if user and user.verify_password(form.password.data):
+            
+        
+        if user and user.verify_password(form.password.data):
+            if user.role == 'admin':
                 # 如果注册过，并且密码验证通过
                 # 修改最后登录时间
                 login_user(user)
@@ -39,9 +44,11 @@ def login():
                 user.save()
                 identity_changed.send(current_app._get_current_object(), identity=Identity(user.username))
                 return redirect(url_for('main.index'))
-            flash('用户名或密码错误', 'danger')
+            else:
+                flash('该账号为超级管理员账号，请从超级管理员入口登录！', 'warning')
         else:
-            flash('该账号为超级管理员账号，请从超级管理员入口登录！', 'warning')
+            flash('用户名或密码错误', 'danger')
+        
 
     return render_template('accounts/login.html', form=form)
 
@@ -77,9 +84,12 @@ def logout():
     flash('已退出', 'success')
     return redirect(url_for('accounts.login'))
 
-@login_required
-def user():
-    return render_template('accounts/user.html')
+class User(MethodView):
+    template_name = 'accounts/user.html'
+    decorators = [login_required, admin_Permission.require(401)]
+
+    def get(self):
+        return render_template(self.template_name)
 
 @login_required
 def update_profile():

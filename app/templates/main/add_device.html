@@ -45,12 +45,7 @@
                             <p>{{ form.location }}</p>
 
                             <p>
-                                {{ form.autoObserver }}
-                                {{form.autoObserver.label}}
-                            </p>
-
-                            <p>
-                                <button class="btn btn-primary" type="submit">确认</button>
+                                <button class="btn btn-primary" type="submit" {% if not public_products %}disabled=disabled{% endif %}>确认</button>
                                 <button class="btn btn-primary" type="reset">重置</button>
                             </p>
                             

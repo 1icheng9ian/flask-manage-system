@@ -29,9 +29,6 @@
                             {{ form.productId }}
                             
                             <button class="btn btn-primary btn-sm" type="submit">添加</button>
-                            <a href="{{ url_for('super_admin.create_public_product') }}">
-                                <button class="btn btn-sm btn-primary diable" disabled="disabled">创建</button> <!--暂时不可用-->
-                            </a>
                             {% for msg in form.productId.errors %}
                             <p>{{ msg }}</p>
                             {% endfor %}

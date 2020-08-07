@@ -1,13 +1,21 @@
 # This file may be used to create an environment using:
 # $ conda create --name <env> --file <this file>
 # platform: win-64
+blinker=1.4=pypi_0
 ca-certificates=2020.1.1=0
 certifi=2020.6.20=py37_0
 click=7.1.2=pypi_0
 flask=1.1.2=pypi_0
+flask-login=0.5.0=pypi_0
+flask-moment=0.10.0=pypi_0
+flask-mongoengine=0.9.5=pypi_0
+flask-principal=0.4.0=pypi_0
+flask-script=2.0.6=pypi_0
+flask-wtf=0.14.3=pypi_0
 itsdangerous=1.1.0=pypi_0
 jinja2=2.11.2=pypi_0
 markupsafe=1.1.1=pypi_0
+mongoengine=0.20.0=pypi_0
 openssl=1.1.1g=he774522_0
 pip=20.1.1=py37_1
 pymongo=3.10.1=pypi_0
@@ -19,4 +27,5 @@ vs2015_runtime=14.16.27012=hf0eaf9b_2
 werkzeug=1.0.1=pypi_0
 wheel=0.34.2=py37_0
 wincertstore=0.2=py37_0
+wtforms=2.3.1=pypi_0
 zlib=1.2.11=h62dcd97_4

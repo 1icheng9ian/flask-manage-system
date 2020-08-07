@@ -2,17 +2,25 @@
 '''
 @Time    :   2020/07/24
 '''
-from flask import render_template, redirect, url_for, flash, current_app, request
-from flask_login import current_user, login_user, login_required
-from flask_principal import identity_changed, Identity
-from .super_forms import EditAdminInfoForm, AddPublicProductForm, EditBulletinForm
-from .forms import SuperLoginForm
-from . import models
-from . import super_models
-from .super_models import PROTOCOL
 import datetime
-from apis.aep_product_management import QueryProduct, DeleteProduct
 from json import loads
+
+from flask import (current_app, flash, redirect, render_template, request,
+                   url_for)
+from flask.views import MethodView
+from flask_login import current_user, login_required, login_user
+from flask_principal import Identity, identity_changed
+
+from apis.aep_device_management import DeleteDevice
+from apis.aep_product_management import DeleteProduct, QueryProduct
+
+from ..main import models as Mainmodels
+from . import models, super_models
+from .forms import SuperLoginForm
+from .permissions import super_admin_Permission
+from .super_forms import (AddPublicProductForm, EditAdminInfoForm,
+                          EditBulletinForm)
+from .super_models import PROTOCOL
 
 
 def login():
@@ -26,17 +34,16 @@ def login():
             user = models.User.objects.get(username=form.username.data)
         except models.User.DoesNotExist:
             user = None
-        if user.role == 'super_admin':
-            if user and user.verify_password(form.password.data):
+        if user and user.verify_password(form.password.data):
+            if user.role == 'super_admin':
                 login_user(user)
                 user.last_login_time = datetime.datetime.now
                 user.save()
                 identity_changed.send(current_app._get_current_object(), identity=Identity(user.username))
                 return redirect(url_for('super_admin.index'))
+            else:
+                flash('该账号为普通账号，请从普通管理员入口登录！', 'warning')
             flash('用户名或密码错误', 'danger')
-        else:
-            flash('该账号为普通账号，请从普通管理员入口登录！', 'warning')
-
     return render_template('super_admin/login.html', form=form)
 
 @login_required
@@ -54,23 +61,19 @@ def super_user_edit():
         return redirect(url_for('super_admin.super_user'))
     return render_template('super_admin/super_user_edit.html', form=form)
 
-@login_required
-def index():
-    '''
-    index 显示管理的各个项目
-    暂时先就显示用户组
-    '''
-    users = models.User.objects.filter(role='admin')
+class Index(MethodView):
+    template_name = 'super_admin/index.html'
+    decorators = [login_required, super_admin_Permission.require(401)]
 
-    try:
-        cur_page = int(request.args.get('page', 1))
-    except:
-        cur_page = 1
-    
-    users = users.paginate(page=cur_page, per_page=10)
-
-    data = {'users': users}
-    return render_template('super_admin/index.html', **data)
+    def get(self):
+        users = models.User.objects.filter(role='admin')
+        try:
+            cur_page = int(request.args.get('page', 1))
+        except:
+            cur_page = 1
+        users = users.paginate(page=cur_page, per_page=10)
+        data = {'users': users}
+        return render_template(self.template_name, **data)
 
 @login_required
 def product_management():
@@ -135,15 +138,56 @@ def delete_public_product(productId):
         flash('该产品下还有设备, 禁止删除!', 'danger')
     return redirect(url_for('super_admin.product_management'))
 
+
+class Device(MethodView):
+    template_name = 'super_admin/device.html'
+    decorators = [login_required, super_admin_Permission.require(401)]
+
+    def get(self):
+        devices = Mainmodels.Device.objects.all()
+        try:
+            cur_page = int(request.args.get('page', 1))
+        except:
+            cur_page = 1
+        devices = devices.paginate(page=cur_page, per_page=10)
+        
+        ''' 可以添加一个查询功能 '''
+
+        data = {'devices': devices}
+        return render_template(self.template_name, **data)
+
 @login_required
-def create_public_product():
-    # 该功能暂时不可用
-    # 通过aep平台直接创建产品
-    return render_template('super_admin/create_public_product.html')
+def delete_device(imei):
+    this_device = Mainmodels.Device.objects.get_or_404(imei=imei)
+    # 变量提取
+    company = this_device.company
+    productName = this_device.productName
+    deviceName = this_device.deviceName
+
+    history = super_models.History()    # 操作历史
+    
+    appkey = models.User.objects.get_or_404(role='super_admin').appkey
+    appsecret = models.User.objects.get_or_404(role='super_admin').appsecret
+    result = DeleteDevice(appkey, appsecret, this_device.apiKey, this_device.productId, this_device.deviceId)
+    result = loads(result.decode('UTF-8'))
+    if result['code'] == 0:
+        this_device.delete()
+
+        history.operationTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        history.operator = current_user.username
+        history.company = company
+        history.productName = productName
+        history.deviceName = deviceName
+        history.operation = 'del'
+        history.save()
+
+        return redirect(url_for('super_admin.device'))
+    else:
+        flash(result['msg'], 'warning')
 
 @login_required
 def history():
-    histories = super_models.History.objects.all()
+    histories = super_models.History.objects.all().order_by('-operationTime')
 
     try:
         cur_page = int(request.args.get('page', 1))

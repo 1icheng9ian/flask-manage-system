@@ -14,10 +14,12 @@ ROLES = (('admin', '管理员'), ('super_admin', '超级管理员'))
 class User(UserMixin, db.Document):
     username = db.StringField(max_length=255, required=True)    # 用户名
     wechatname = db.StringField() # 绑定的微信名
+    confirmed = db.BooleanField(default=False)  # 验证过微信后为true
     password_hash = db.StringField(required=True)
     create_time = db.DateTimeField(default=datetime.datetime.now, required=True)
     last_login_time = db.DateTimeField(default=datetime.datetime.now, required=True)
     role = db.StringField(default='admin', required=True, choices=ROLES)
+    is_superuser = db.BooleanField(default=False)   # super admin 为true
     appkey = db.StringField()
     appsecret = db.StringField()
     cellphone = db.StringField()

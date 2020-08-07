@@ -8,9 +8,9 @@
 
 {% block body %}
 
-{% include '_navbar.html' %}
+{% include '_navbar2.html' %}
 
-{% include '_sidebar.html' %}
+{% include '_sidebar2.html' %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -18,12 +18,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="col-md-3">
-                            设备数据
-                        </div>
-                        <div class="col-md-offset-10">
-                            <a href="{{ url_for('main.add_device') }}">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true">新增</span>
-                            </a>
+                            设备信息
                         </div>
                     </div>
                     <div class="panel-body">
@@ -37,6 +32,7 @@
                                     <th>所属公司</th>
                                     <th>安装位置</th>
                                     <th>设备状态</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,6 +52,11 @@
                                         {% else %}
                                         <span class="label label-danger">下线</span>
                                         {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('super_admin.delete_device', imei = device.imei) }}" class="btn btn-xs btn-danger" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        </a>
                                     </td>
                                 </tr>
                                 {% else %}
