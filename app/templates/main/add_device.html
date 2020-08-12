@@ -45,7 +45,7 @@
                             <p>{{ form.location }}</p>
 
                             <p>
-                                <button class="btn btn-primary" type="submit" {% if not public_products %}disabled=disabled{% endif %}>确认</button>
+                                <button class="btn btn-primary" type="submit" {% if not public_products %}disabled=disabled{% endif %} onclick="{if(confirm('请确认输入的信息无误！')){this.document.formname.submit();return true;}return false;}">确认</button>
                                 <button class="btn btn-primary" type="reset">重置</button>
                             </p>
                             

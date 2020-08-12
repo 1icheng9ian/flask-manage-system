@@ -144,17 +144,26 @@ class Device(MethodView):
     decorators = [login_required, super_admin_Permission.require(401)]
 
     def get(self):
-        devices = Mainmodels.Device.objects.all()
+        devices = Mainmodels.Device.objects.aggregate([{"$group": {"_id": "$operator", "total": {"$sum": 1}}}])
+        data = {'devices': devices}
+        return render_template(self.template_name, **data)
+
+class Detail(MethodView):
+    template_name = 'super_admin/details.html'
+    decorators = [login_required, super_admin_Permission.require(401)]
+
+    def get(self, _id):
+        details = Mainmodels.Device.objects.filter(operator=_id).order_by('-createTime')
+
         try:
             cur_page = int(request.args.get('page', 1))
         except:
             cur_page = 1
-        devices = devices.paginate(page=cur_page, per_page=10)
-        
-        ''' 可以添加一个查询功能 '''
 
-        data = {'devices': devices}
+        details = details.paginate(page=cur_page, per_page=10)
+        data = {'operator': _id, 'details': details}
         return render_template(self.template_name, **data)
+        
 
 @login_required
 def delete_device(imei):
@@ -185,30 +194,42 @@ def delete_device(imei):
     else:
         flash(result['msg'], 'warning')
 
-@login_required
-def history():
-    histories = super_models.History.objects.all().order_by('-operationTime')
+# @login_required
+# def delete_devices():
+#     imeis = request.values.getlist('imeis')
+#     print(imeis)
+#     return redirect(url_for('super_admin.device'))
 
-    try:
-        cur_page = int(request.args.get('page', 1))
-    except:
-        cur_page = 1
+class History(MethodView):
+    template_name = 'super_admin/history.html'
+    decorators = [login_required, super_admin_Permission.require(401)]
 
-    histories = histories.paginate(page=cur_page, per_page=10)
+    def get(self):
+        histories = super_models.History.objects.all().order_by('-operationTime')
 
-    data = {'histories': histories}
-    return render_template('super_admin/history.html', **data)
+        try:
+            cur_page = int(request.args.get('page', 1))
+        except:
+            cur_page = 1
 
-@login_required
-def super_bulletin():
-    notices = super_models.Bulletin.objects.all()
-    try:
-        cur_page = int(request.args.get('page', 1))
-    except:
-        cur_page = 1
-    notices = notices.paginate(page=cur_page, per_page=5)
-    data = {'notices': notices}
-    return render_template('super_admin/super_bulletin.html', **data)
+        histories = histories.paginate(page=cur_page, per_page=10)
+
+        data = {'histories': histories}
+        return render_template(self.template_name, **data)
+
+class Bulletin(MethodView):
+    template_name = 'super_admin/super_bulletin.html'
+    decorators = [login_required, super_admin_Permission.require(401)]
+
+    def get(self):
+        notices = super_models.Bulletin.objects.all().order_by('-time')
+        try:
+            cur_page = int(request.args.get('page', 1))
+        except:
+            cur_page = 1
+        notices = notices.paginate(page=cur_page, per_page=5)
+        data = {'notices': notices}
+        return render_template(self.template_name, **data)
 
 @login_required
 def edit_bulletin():

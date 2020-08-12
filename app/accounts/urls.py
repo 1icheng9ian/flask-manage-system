@@ -28,11 +28,14 @@ super_admin.add_url_rule('/super_user', 'super_user', super_views.super_user)
 super_admin.add_url_rule('/super_user/super_user_edit', 'super_user_edit', super_views.super_user_edit, methods=['GET', 'POST'])
 
 super_admin.add_url_rule('/super/device', view_func=super_views.Device.as_view('device'))
+super_admin.add_url_rule('/super/device/details/<string:_id>', view_func=super_views.Detail.as_view('details'))
 super_admin.add_url_rule('/super/device/delete_device/<string:imei>', 'delete_device', super_views.delete_device)
+# 批量删除
+# super_admin.add_url_rule('/super/device/delete_devices', 'delete_devices', super_views.delete_devices, methods=['POST'])
 
 # delete 时，需要从前端传参
 super_admin.add_url_rule('/product_management/delete_public_product/<string:productId>', 'delete_public_product', super_views.delete_public_product, methods=['GET'])
-super_admin.add_url_rule('/history', 'history', super_views.history)
-super_admin.add_url_rule('/super_bulletin', 'super_bulletin', super_views.super_bulletin)
+super_admin.add_url_rule('/super/history', view_func=super_views.History.as_view('history'))
+super_admin.add_url_rule('/super/super_bulletin', view_func=super_views.Bulletin.as_view('super_bulletin'))
 super_admin.add_url_rule('/super_bulletin/edit_bulletin', 'edit_bulletin', super_views.edit_bulletin, methods=['GET', 'POST'])
 

@@ -12,7 +12,7 @@ from apis.aep_device_management import CreateDevice, DeleteDevice
 
 from ..accounts.models import User
 from . import models
-from .forms import AddDeviceForm
+from .forms import AddDeviceForm, QueryDeviceForm
 from ..accounts import super_models, models as Usermodels
 import datetime
 
@@ -30,15 +30,48 @@ def index():
 
 @login_required
 def device():
-    devices = models.Device.objects.filter(operator=current_user.username)
+    # 表格显示部分
+    message = ''
+    devices = models.Device.objects.filter(operator=current_user.username).order_by('-createTime')
+    all_devices = devices
+    form = QueryDeviceForm()    # 表单部分
+    # 用户可以进行模糊搜索
+    # 可以只选择三个中的一个
+    # 如果填写了多个，默认就是复合搜索
+    # 如果找不到，需要给出warning
+    if form.validate_on_submit():
+        imei = form.imei.data
+        company = form.company.data
+        state = request.values.get('state')
+        message = '当前查找条件:' + imei + company
+        if state == 'all':
+            if imei and company:
+                devices = models.Device.objects(Q(imei=imei) & Q(company=company)).filter(operator=current_user.username).order_by('-createTime')
+            elif imei and not company:
+                devices = models.Device.objects(Q(imei=imei)).filter(operator=current_user.username).order_by('-createTime')
+            elif not imei and company:
+                devices = models.Device.objects(Q(company=company)).filter(operator=current_user.username).order_by('-createTime')
+            else:
+                devices = all_devices
+        else:
+            if imei and company:
+                devices = models.Device.objects(Q(imei=imei) & Q(company=company) & Q(state=state)).filter(operator=current_user.username).order_by('-createTime')
+            elif imei and not company:
+                devices = models.Device.objects(Q(imei=imei) & Q(state=state)).filter(operator=current_user.username).order_by('-createTime')
+            elif not imei and company:
+                devices = models.Device.objects(Q(company=company) & Q(state=state)).filter(operator=current_user.username).order_by('-createTime')
+            else:
+                devices = models.Device.objects(Q(state=state)).filter(operator=current_user.username).order_by('-createTime')
+
+    # 分页
     try:
         cur_page = int(request.args.get('page', 1))
     except:
         cur_page = 1
     devices = devices.paginate(page=cur_page, per_page=10)
+    data = {'devices': devices, 'message': message}
+    return render_template('main/device.html', **data, form=form)
 
-    data = {'devices': devices}
-    return render_template('main/device.html', **data)
 
 @login_required
 def add_device():

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}设备{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css' )}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+{% include '_navbar2.html' %}
+
+{% include '_sidebar2.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a href="{{ url_for('super_admin.device') }}">
+                            <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><strong>用户:</strong> {{ operator }}
+                        </a>
+                        
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>imei号</th>
+                                    <th>所属产品</th>
+                                    <th>创建时间</th>
+                                    <th>所属公司</th>
+                                    <th>安装位置</th>
+                                    <th>设备状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detail in details.items %}
+                                <tr>
+                                    <form action="super_admin/delete_devices" method="POST">
+                                        <td><input type="checkbox" name="imeis" value="{{ detail.imei }}"></td>
+                                    </form>
+                                    <td>{{ detail.imei }}</td>
+                                    <td>{{ detail.productName }}</td>
+                                    <td>{{ detail.createTime }}</td>
+                                    <td>{{ detail.company }}</td>
+                                    <td>{{ detail.location }}</td>
+                                    <td>
+                                        {% if detail.state == 'offline' %}
+                                        <span class="label label-default">未激活</span>
+                                        {% elif detail.state == 'online' %}
+                                        <span class="label label-success">在线</span>
+                                        {% else %}
+                                        <span class="label label-danger">下线</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('super_admin.delete_device', imei = detail.imei) }}" class="btn btn-xs btn-danger" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% import '_pagination.html' as pagination %}
+                        {{ pagination.render_pagination(details) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

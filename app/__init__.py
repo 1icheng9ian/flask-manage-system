@@ -7,11 +7,12 @@
 import os
 
 from flask import Flask
-from .config import config
 from flask_login import LoginManager
 from flask_moment import Moment
 from flask_mongoengine import MongoEngine
 from flask_principal import Principal
+
+from .config import config
 
 # 初始化
 db = MongoEngine()

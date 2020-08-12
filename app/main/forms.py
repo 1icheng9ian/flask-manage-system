@@ -4,7 +4,7 @@
 '''
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, ValidationError
+from wtforms import StringField, BooleanField, RadioField, ValidationError
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length
 from .models import Device
@@ -20,8 +20,8 @@ class AddDeviceForm(FlaskForm):
         if Device.objects.filter(imei=field.data).count() > 0:
             raise ValidationError('设备已添加')
 
-'''
-查询表单
+
 class QueryDeviceForm(FlaskForm):
     imei = StringField('imei号')
-'''
+    company = StringField('所属公司')
+    # state = RadioField('设备状态', choices=(('all', '全部'), ('online', '在线'), ('offline', '离线'), ('fault', '故障')))

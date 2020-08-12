@@ -23,7 +23,6 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>操作</th>
                                 <th>用户名</th>
                                 <th>所属公司</th>
                                 <th>联系方式</th>
@@ -34,11 +33,6 @@
                         <tbody>
                             {% for user in users.items %}
                             <tr>
-                                <td>
-                                    <a href="#" class="btn btn-xs btn-danger" disabled="disabled">
-                                        <span class="glyphicon glyphicon-erase" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="重置密码"></span>
-                                    </a>
-                                </td>
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.company }}</td>
                                 <td>{{ user.cellphone }}</td>
@@ -58,6 +52,9 @@
                     </table>
                     {% import '_pagination.html' as pagination %}
                     {{ pagination.render_pagination(users) }}
+
+                    {% import "_msg.html" as messages %}
+                    {{ messages.render_msg() }}
                 </div>
             </div>
         </div>

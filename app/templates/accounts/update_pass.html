@@ -38,7 +38,7 @@
                         <p>{{ msg }}</p>
                         {% endfor %}
 
-                        <button class="btn btn-primary col-sm-1" type="submit">确认</button>
+                        <button class="btn btn-primary col-sm-1" type="submit" onclick="{if(confirm('确定修改吗?')){this.document.formname.submit();return true;}return false;}">确认</button>
                         {% import "_msg.html" as messages %}
                         {{ messages.render_msg() }}
                     </form>

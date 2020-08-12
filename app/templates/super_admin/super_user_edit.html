@@ -35,7 +35,7 @@
                         <p>{{ msg }}</p>
                         {% endfor %}
 
-                        <button class="btn btn-primary col-sm-1" type="submit" name="add_user">确认修改</button>
+                        <button class="btn btn-primary col-sm-1" type="submit" name="add_user" onclick="{if(confirm('确定修改吗?')){this.document.formname.submit();return true;}return false;}">确认修改</button>
                     </form>
                     {% import "_msg.html" as messages %}
                     {{ messages.render_msg() }}
