@@ -18,20 +18,63 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <span>报警信息</span>
+                        <!-- <a href="#" class="btn btn-xs btn-default" style="float: right;">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true">一键处理</span>
+                        </a> -->
                     </div>
                     <div class="panel-body">
-                        <!-- 故障警报 red danger -->
-                        <div class="bs-callout bs-callout-danger">
-                            
+                        <div class="row">
+                            {% for alarm in alarms.items %}
+                            <div class="col-md-4 col-sm-6">
+                                {% if alarm.eventType == 0 %}
+                                <div class="bs-callout bs-callout-danger">
+                                    <h4>警告:设备下线</h4>
+                                {% elif alarm.eventType == 1 %}
+                                <div class="bs-callout bs-callout-success">
+                                    <h4>提示:设备上线</h4>
+                                {% elif alarm.eventType == 2 and alarm.serviceId == 1001 and alarm.tamper_alarm == 1 %}
+                                <div class="bs-callout bs-callout-warning">
+                                    <h4>警告:设备被拆除</h4>
+                                {% elif alarm.eventType == 2 and alarm.serviceId == 1001 and alarm.tamper_alarm == 0 %}
+                                <div class="bs-callout bs-callout-success">
+                                    <h4>提示:设备已安装</h4>
+                                {% elif alarm.eventType == 2 and alarm.serviceId == 1003 and alarm.smoke_state == 0 %}
+                                <div class="bs-callout bs-callout-warning">
+                                    <h4>警告:发生烟雾警报</h4>
+                                {% elif alarm.eventType == 2 and alarm.serviceId == 1003 and alarm.smoke_state == 1 %}
+                                <div class="bs-callout bs-callout-success">
+                                    <h4>提示:烟雾警报解除</h4>
+                                {% elif alarm.eventType == 3 and alarm.error == 1 %}
+                                <div class="bs-callout bs-callout-danger">
+                                    <h4>警告:烟感故障</h4>
+                                {% elif alarm.eventType == 3 and alarm.error == 2 %}
+                                <div class="bs-callout bs-callout-success">
+                                    <h4>提示:烟感故障解除</h4>
+                                {% elif alarm.eventType == 3 and alarm.error == 3 %}
+                                <div class="bs-callout bs-callout-danger">
+                                    <h4>警告:设备电量不足</h4>
+                                {% elif alarm.eventType == 3 and alarm.error == 4 %}
+                                <div class="bs-callout bs-callout-success">
+                                    <h4>提示:已更换新电池</h4>
+                                {% endif %}
+                                    <p style="color: #9d9d9d;">{{ alarm.time }}</p>
+                                    <p><strong>设备imei:</strong>{{ alarm.imei }}</p>
+                                    <p><strong>安装位置:</strong>{{ alarm.location }}</p>
+                                    {% if not alarm.read %}
+                                    <a href="{{ url_for('main.confirm_one', id = alarm.id) }}" class="btn btn-xs btn-primary">确认</a>
+                                    {% else %}
+                                    <a class="btn btn-xs btn-primary" disabled>已确认</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="col-md-4">
+                                没有记录
+                            </div>
+                            {% endfor %}
                         </div>
-                        <!-- 防拆警报 yellow warning -->
-                        <div class="bs-callout bs-callout-warning">
-                            
-                        </div>
-                        <!-- 设备上线通知 green success -->
-                        <div class="bs-callout bs-callout-success">
-
-                        </div>
+                        {% import '_pagination.html' as pagination %}
+                        {{ pagination.render_pagination(alarms) }}
                     </div>
                 </div>
             </div>

@@ -48,8 +48,6 @@ def login():
                 flash('该账号为超级管理员账号，请从超级管理员入口登录！', 'warning')
         else:
             flash('用户名或密码错误', 'danger')
-        
-
     return render_template('accounts/login.html', form=form)
 
 def register():

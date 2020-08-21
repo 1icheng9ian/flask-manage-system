@@ -27,10 +27,10 @@ class PublicProduct(db.Document):
 class History(db.Document):
     operationTime = db.DateTimeField(required=True)
     operator = db.StringField(required=True)
-    company = db.StringField(required=True)
-    operation = db.StringField(required=True)
-    productName = db.StringField(required=True)
-    deviceName = db.StringField(required=True)
+    company = db.StringField()
+    operation = db.StringField()
+    productName = db.StringField()
+    deviceName = db.StringField()
 
 class Bulletin(db.Document):
     time = db.DateTimeField(required=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

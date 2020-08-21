@@ -5,7 +5,7 @@
 
 from json import loads, dumps
 
-from flask import flash, redirect, render_template, url_for, jsonify, request
+from flask import flash, redirect, render_template, url_for, request, session
 from flask_login import current_user, login_required
 from mongoengine.queryset.visitor import Q
 from apis.aep_device_management import CreateDevice, DeleteDevice
@@ -14,7 +14,8 @@ from ..accounts.models import User
 from . import models
 from .forms import AddDeviceForm, QueryDeviceForm
 from ..accounts import super_models, models as Usermodels
-import datetime
+import datetime, time
+from flask.views import MethodView
 
 @login_required
 def index():
@@ -63,12 +64,25 @@ def device():
             else:
                 devices = models.Device.objects(Q(state=state)).filter(operator=current_user.username).order_by('-createTime')
 
+    # 判断设备是否离线
+    endtime = datetime.datetime.now()
+    for device in devices:
+        if not device.updateTime:
+            device.state = 'offline'
+        else:
+            starttime = device.updateTime
+            heartTime = device.heartbeat_time
+            second = (endtime - starttime).seconds
+            if second > heartTime:
+                device.state = 'offline'
+
     # 分页
     try:
         cur_page = int(request.args.get('page', 1))
     except:
         cur_page = 1
     devices = devices.paginate(page=cur_page, per_page=10)
+
     data = {'devices': devices, 'message': message}
     return render_template('main/device.html', **data, form=form)
 
@@ -139,7 +153,7 @@ def add_device():
 
 @login_required
 def bulletin():
-    notices = super_models.Bulletin.objects.all()
+    notices = super_models.Bulletin.objects.all().order_by('-time')
     try:
         cur_page = int(request.args.get('page', 1))
     except:
@@ -151,4 +165,106 @@ def bulletin():
 
 @login_required
 def alarm():
-    return render_template('main/alarm.html')
+    alarms = models.Alarm.objects.filter(operator=current_user.username).order_by('-time')
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+    alarms = alarms.paginate(page=cur_page, per_page=9)
+    data = {'alarms': alarms}
+    return render_template('main/alarm.html', **data)
+
+@login_required
+def confirm_one(id):
+    '''处理单个报警信息: 将read属性改为True，并将按钮变灰'''
+    this_alarm = models.Alarm.objects.get_or_404(id=id)
+    this_alarm.read = True
+    this_alarm.save()
+    
+    alarms = models.Alarm.objects.filter(operator=current_user.username).order_by('-time')
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+    alarms = alarms.paginate(page=cur_page, per_page=9)
+    data = {'alarms': alarms}
+    return render_template('main/alarm.html', **data)
+
+def confirm_many():
+    '''批量处理'''
+    pass
+
+def push_port():
+    if request.data:
+        msg = request.data.decode('utf-8')
+        msg = loads(msg)
+        # 存进数据库
+        if 'timestamp' in msg:
+            alarm = models.Alarm()
+            alarm.productId = msg['productId']
+            alarm.deviceId = msg['deviceId']
+            # 对应的设备信息
+            this_device = models.Device.objects.get_or_404(deviceId=msg['deviceId'])
+            alarm.location = this_device.location
+            alarm.deviceName = this_device.deviceName
+            alarm.operator = this_device.operator
+            
+            time = datetime.datetime.fromtimestamp(msg['timestamp'] / 1000)
+            alarm.time = time.strftime('%Y-%m-%d %H:%M:%S')
+            eventType = msg['eventType']
+            if eventType == 1:  # 上线
+                alarm.eventType = eventType
+                # 改变这个设备的状态
+                this_device.state = 'online'
+
+            elif eventType == 0:    # 下线
+                alarm.eventType = eventType
+                this_device.state = 'offline'
+
+            else:
+                alarm.imei = msg['IMEI']
+                serviceId = msg['serviceId']
+
+                if eventType == 2 and serviceId == 1003:
+                    alarm.smoke_state = msg['eventContent']['smoke_state']
+                    alarm.smoke_value = msg['eventContent']['smoke_value']
+                    
+                elif eventType == 2 and serviceId == 1001:
+                    alarm.tamper_alarm = msg['eventContent']['tamper_alarm']
+                    alarm.battery_value = msg['eventContent']['battery_value']
+                    this_device.batteryValue = msg['eventContent']['battery_value']
+
+                elif eventType == 3 and serviceId == 1002:
+                    alarm.error = msg['eventContent']['error']
+                    this_device.state = 'fault'
+
+                alarm.eventType = eventType
+                alarm.serviceId = serviceId
+
+            this_device.updateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # 时间点
+            this_device.save()
+            alarm.save()
+            
+        else:
+            heart = models.Heart()
+            heart.imei = msg['IMEI']
+            heart.heartbeat_time = msg['heartbeat_time']
+            heartbeat_time = int(msg['heartbeat_time']) * 3600  # 心跳周期秒数
+            heart.battery_value = msg['battery_value']
+            heart.save()
+
+            this_device = models.Device.objects.get_or_404(imei=msg['IMEI'])
+            this_device.batteryValue = msg['battery_value'] # 修改电量
+            this_device.updateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            this_device.heartbeat_time = heartbeat_time     # 存库
+            this_device.save()
+
+        return '200 OK' # 电信平台需要返回200状态
+
+
+# 不能加login_required, 原因未知 
+# 这样就不能用current_user的区分不同用户的报警信息了
+def get_context_data():
+    '''暂时这样，更好的是设置服务器端的session'''
+    unread = models.Alarm.objects(read=False).count()
+    return {'unread': unread}

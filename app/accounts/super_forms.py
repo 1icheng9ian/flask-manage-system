@@ -19,20 +19,12 @@ class AddPublicProductForm(FlaskForm):
     def validate_productId(self, field):
         if PublicProduct.objects.filter(productId=field.data).count() > 0:
             raise ValidationError('请勿重复添加')
-'''
-# 未使用
-class CreatePublicProductForm(FlaskForm):
-    productName = StringField('产品名称', validators=[DataRequired(), Length(30)])
-    productType = StringField('产品分类', validators=[DataRequired()])
-    secondaryType = StringField('二级分类', validators=[DataRequired()])
-    thirdType = StringField('三级分类', validators=[DataRequired()])
-    nodeType = StringField('节点类型', validators=[DataRequired()])
-    accessType = StringField('接入类型', validators=[DataRequired()])
-'''  
 
 class EditBulletinForm(FlaskForm):
     title = StringField('标题', validators=[DataRequired()])
     content = TextAreaField('内容', validators=[DataRequired(), Length(max=512)])
 
 
+class QueryUserForm(FlaskForm):
+    username = StringField('用户名')
 

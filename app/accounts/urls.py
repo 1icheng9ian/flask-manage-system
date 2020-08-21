@@ -22,16 +22,14 @@ accounts.add_url_rule('/logout', 'logout', views.logout)
 super_admin = Blueprint('super_admin', __name__)
 
 super_admin.add_url_rule('/super_login', 'login', super_views.login, methods=['GET', 'POST'])
-super_admin.add_url_rule('/super_index', view_func=super_views.Index.as_view('index'))
+super_admin.add_url_rule('/super_userinfo', view_func=super_views.UserInfo.as_view('userinfo'))
 super_admin.add_url_rule('/super/product_management', 'product_management', super_views.product_management, methods=['GET', 'POST'])
 super_admin.add_url_rule('/super_user', 'super_user', super_views.super_user)
 super_admin.add_url_rule('/super_user/super_user_edit', 'super_user_edit', super_views.super_user_edit, methods=['GET', 'POST'])
 
-super_admin.add_url_rule('/super/device', view_func=super_views.Device.as_view('device'))
-super_admin.add_url_rule('/super/device/details/<string:_id>', view_func=super_views.Detail.as_view('details'))
-super_admin.add_url_rule('/super/device/delete_device/<string:imei>', 'delete_device', super_views.delete_device)
+super_admin.add_url_rule('/super/device', 'device', super_views.device, methods=['GET', 'POST'])
 # 批量删除
-# super_admin.add_url_rule('/super/device/delete_devices', 'delete_devices', super_views.delete_devices, methods=['POST'])
+super_admin.add_url_rule('/super/super_admin/delete_many_devices', 'delete_many_devices', super_views.delete_many_devices, methods=['POST'])
 
 # delete 时，需要从前端传参
 super_admin.add_url_rule('/product_management/delete_public_product/<string:productId>', 'delete_public_product', super_views.delete_public_product, methods=['GET'])

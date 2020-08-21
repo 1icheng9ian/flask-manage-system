@@ -19,7 +19,7 @@ from . import models, super_models
 from .forms import SuperLoginForm
 from .permissions import super_admin_Permission
 from .super_forms import (AddPublicProductForm, EditAdminInfoForm,
-                          EditBulletinForm)
+                          EditBulletinForm, QueryUserForm)
 from .super_models import PROTOCOL
 
 
@@ -40,7 +40,7 @@ def login():
                 user.last_login_time = datetime.datetime.now
                 user.save()
                 identity_changed.send(current_app._get_current_object(), identity=Identity(user.username))
-                return redirect(url_for('super_admin.index'))
+                return redirect(url_for('super_admin.device'))
             else:
                 flash('该账号为普通账号，请从普通管理员入口登录！', 'warning')
             flash('用户名或密码错误', 'danger')
@@ -61,8 +61,8 @@ def super_user_edit():
         return redirect(url_for('super_admin.super_user'))
     return render_template('super_admin/super_user_edit.html', form=form)
 
-class Index(MethodView):
-    template_name = 'super_admin/index.html'
+class UserInfo(MethodView):
+    template_name = 'super_admin/userinfo.html'
     decorators = [login_required, super_admin_Permission.require(401)]
 
     def get(self):
@@ -138,67 +138,60 @@ def delete_public_product(productId):
         flash('该产品下还有设备, 禁止删除!', 'danger')
     return redirect(url_for('super_admin.product_management'))
 
+@login_required
+def device():
+    devices = Mainmodels.Device.objects.all()
+    form = QueryUserForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        devices = Mainmodels.Device.objects.filter(operator=username).order_by('operator')
+    
+    try:
+        cur_page = int(request.args.get('page', 1))
+    except:
+        cur_page = 1
+    devices = devices.paginate(page=cur_page, per_page=10)
 
-class Device(MethodView):
-    template_name = 'super_admin/device.html'
-    decorators = [login_required, super_admin_Permission.require(401)]
+    data = {'devices': devices}
+    return render_template('super_admin/device.html', **data, form=form)
 
-    def get(self):
-        devices = Mainmodels.Device.objects.aggregate([{"$group": {"_id": "$operator", "total": {"$sum": 1}}}])
-        data = {'devices': devices}
-        return render_template(self.template_name, **data)
-
-class Detail(MethodView):
-    template_name = 'super_admin/details.html'
-    decorators = [login_required, super_admin_Permission.require(401)]
-
-    def get(self, _id):
-        details = Mainmodels.Device.objects.filter(operator=_id).order_by('-createTime')
-
-        try:
-            cur_page = int(request.args.get('page', 1))
-        except:
-            cur_page = 1
-
-        details = details.paginate(page=cur_page, per_page=10)
-        data = {'operator': _id, 'details': details}
-        return render_template(self.template_name, **data)
-        
 
 @login_required
-def delete_device(imei):
-    this_device = Mainmodels.Device.objects.get_or_404(imei=imei)
-    # 变量提取
-    company = this_device.company
-    productName = this_device.productName
-    deviceName = this_device.deviceName
+def delete_many_devices():  # 批量删除
+    deviceIds = request.values.getlist("array")
+    if deviceIds:
+        # 如果是全部一样的产品可以一条命令删除，如果不是，则需要分别删除
+        # 所以循环删除
+        history = super_models.History()    # 操作历史
+        appkey = models.User.objects.get_or_404(role='super_admin').appkey
+        appsecret = models.User.objects.get_or_404(role='super_admin').appsecret
+        for deviceId in deviceIds:
+            this_device = Mainmodels.Device.objects.get_or_404(deviceId=deviceId)
+            operator = this_device.operator
+            company = this_device.company
+            productName = this_device.productName
+            deviceName = this_device.deviceName
 
-    history = super_models.History()    # 操作历史
-    
-    appkey = models.User.objects.get_or_404(role='super_admin').appkey
-    appsecret = models.User.objects.get_or_404(role='super_admin').appsecret
-    result = DeleteDevice(appkey, appsecret, this_device.apiKey, this_device.productId, this_device.deviceId)
-    result = loads(result.decode('UTF-8'))
-    if result['code'] == 0:
-        this_device.delete()
+            result = DeleteDevice(appkey, appsecret, this_device.apiKey, this_device.productId, this_device.deviceId)
+            result = loads(result.decode('UTF-8'))
 
-        history.operationTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        history.operator = current_user.username
-        history.company = company
-        history.productName = productName
-        history.deviceName = deviceName
-        history.operation = 'del'
+            if result['code'] == 0:
+                this_device.delete()
+
+                history.operationTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                history.operator = operator
+                history.company = company
+                history.productName = productName
+                history.deviceName = deviceName
+                history.operation = 'del'
+                
+            else:
+                flash(result['msg'], 'warning')
         history.save()
-
-        return redirect(url_for('super_admin.device'))
     else:
-        flash(result['msg'], 'warning')
+        flash('没有选择任何设备', 'warning')
+    return redirect(url_for('super_admin.device'))
 
-# @login_required
-# def delete_devices():
-#     imeis = request.values.getlist('imeis')
-#     print(imeis)
-#     return redirect(url_for('super_admin.device'))
 
 class History(MethodView):
     template_name = 'super_admin/history.html'

@@ -24,4 +24,3 @@ class AddDeviceForm(FlaskForm):
 class QueryDeviceForm(FlaskForm):
     imei = StringField('imei号')
     company = StringField('所属公司')
-    # state = RadioField('设备状态', choices=(('all', '全部'), ('online', '在线'), ('offline', '离线'), ('fault', '故障')))

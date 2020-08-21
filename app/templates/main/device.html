@@ -80,11 +80,18 @@
                                     <td>{{ device.location }}</td>
                                     <td>
                                         {% if device.state == 'offline' %}
-                                        <span class="label label-default">未激活</span>
+                                        <span class="label label-default">离线</span>
                                         {% elif device.state == 'online' %}
                                         <span class="label label-success">在线</span>
+                                            {% if device.batteryValue > 80 %}
+                                            <span class="label label-success">{{ device.batteryValue }}</span>
+                                            {% elif device.batteryValue < 60 %}
+                                            <span class="label label-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="电量不足">{{ device.batteryValue }}</span>
+                                            {% else %}
+                                            <span class="label label-warning">{{ device.batteryValue }}</span>
+                                            {% endif %}
                                         {% else %}
-                                        <span class="label label-danger">下线</span>
+                                        <span class="label label-danger">故障</span>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -105,6 +112,9 @@
     </div>
 </div>
 
-
 {% endblock %}
-
+{% block js %}
+<script>
+	$(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+{% endblock %}

@@ -19,12 +19,20 @@
                     <div class="panel panel-default">
                         <div class="panel-heading" role="tab" id="heading">
                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse" aria-expanded="true" aria-controls="collapse">
-                                点击搜索
+                                搜索
                             </a>
                         </div>
-                        <div id="collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading">
+                        <div id="collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading">
                             <div class="panel-body">
-                                
+                                <form class="form-horizontal" method="POST">
+                                    {{ form.csrf_token }}
+                                    <div class="col-sm-6">
+                                        <p>{{ form.username.label }}{{ form.username }}</p>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-sm btn-primary" type="submit">搜索</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -32,26 +40,62 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <span>设备信息</span>
-                        <a class="btn btn-xs btn-default" onclick="{location.reload();}" style="float: right;">
-                            <span class="glyphicon glyphicon-refresh" aria-hidden="true">刷新</span>
-                        </a>
+                        
                     </div>
                     <div class="panel-body">
-                        {% for device in devices %}
-                        <div class="col-sm-6 col-md-3">
-                            <div class="thumbnail">
-                                <p><strong>用户:</strong><span>{{ device._id }}</span></p>
-                                <p><strong>设备数:</strong><span class="label label-success">{{ device.total }}</span></p>
-                                <p>
-                                    <strong>操作:</strong>
-                                    <a href="{{ url_for('super_admin.details', _id=device._id) }}" class="btn btn-primary btn-xs">
-                                        <span>详情</span>
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                        {% endfor %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>imei号</th>
+                                    <th>创建者</th>
+                                    <th>所属产品</th>
+                                    <th>创建时间</th>
+                                    <th>所属公司</th>
+                                    <th>安装位置</th>
+                                    <th>设备状态</th>
+                                </tr>
+                            </thead>
+                            <form action="super_admin/delete_many_devices" method="POST">
+                                <tbody>
+                                    {% for device in devices.items %}
+                                    <tr>
+                                        <td><input type="checkbox" name="array" value="{{ device.deviceId }}"></td>
+                                        <td>{{ device.imei }}</td>
+                                        <td>{{ device.operator }}</td>
+                                        <td>{{ device.productName }}</td>
+                                        <td>{{ device.createTime }}</td>
+                                        <td>{{ device.company }}</td>
+                                        <td>{{ device.location }}</td>
+                                        <td>
+                                            {% if device.state == 'offline' %}
+                                            <span class="label label-default">未激活</span>
+                                            {% elif device.state == 'online' %}
+                                            <span class="label label-success">在线</span>
+                                            {% if device.batteryValue > 80 %}
+                                                <span class="label label-success">{{ device.batteryValue }}</span>
+                                                {% elif device.batteryValue < 60 %}
+                                                <span class="label label-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="电量不足">{{ device.batteryValue }}</span>
+                                                {% else %}
+                                                <span class="label label-warning">{{ device.batteryValue }}</span>
+                                                {% endif %}
+                                            {% else %}
+                                            <span class="label label-danger">下线</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <button class="btn btn-xs btn-danger" style="float: right;" type="submit" onclick="{if(confirm('确定删除吗?')){this.document.formname.submit();return true;}return false;}"><!-- 删除 -->
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>
+                            </form>
+                        </table>
+                        {% import '_pagination.html' as pagination %}
+                        {{ pagination.render_pagination(devices) }}
                         
+                        {% import "_msg.html" as messages %}
+                        {{ messages.render_msg() }}
                     </div>
                 </div>
             </div>

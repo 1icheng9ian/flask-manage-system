@@ -17,7 +17,7 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <span>子用户信息</span>
+                    <span>用户信息</span>
                 </div>
                 <div class="panel-body">
                     <table class="table">
@@ -27,7 +27,7 @@
                                 <th>所属公司</th>
                                 <th>联系方式</th>
                                 <th>公司地址</th>
-                                <th>是否实名</th>
+                                <!-- <th>是否实名</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -37,13 +37,13 @@
                                 <td>{{ user.company }}</td>
                                 <td>{{ user.cellphone }}</td>
                                 <td>{{ user.address }}</td>
-                                <td>
+                                <!-- <td>
                                     {% if user.wechatname %}
                                         <span>{{ user.wechatname }}</span>
                                     {% else %}
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                     {% endif %}
-                                </td>
+                                </td> -->
                             </tr>
                             {% else %}
                             <tr><td colspan="6" style="text-align: left">没有记录</td></tr>

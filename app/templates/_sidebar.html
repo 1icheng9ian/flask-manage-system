@@ -7,7 +7,17 @@
     <li><a href="{{ url_for('main.device') }}">设备管理</a></li>
   </ul>
   <ul class="nav nav-sidebar">
-    <li><a href="{{ url_for('main.alarm') }}">实时报警</a></li>
+    <li>
+      <a href="{{ url_for('main.alarm') }}">
+      实时报警
+      {% if unread %}
+      <span class="badge" style="background-color: #f44336;">
+        {{ unread }}
+      </span>
+      {% endif %}
+      </a>
+    </li>
+    
   </ul>
   <ul class="nav nav-sidebar">
     <li><a href="{{ url_for('accounts.user') }}">用户资料</a></li>
